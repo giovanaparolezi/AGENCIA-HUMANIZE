@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Humanize</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-[#FFF6EE] relative">
+
+  <!-- Background com opacidade -->
+  <div class="absolute inset-0 bg-no-repeat bg-center bg-[length:650px_auto] opacity-60 z-0"
+    style="background-image: url('Pattern_Humanize-2.png');">
+  </div>
+
+
+
+  <!-- Card de login -->
+  <div class="relative bg-[#FFF6EE] rounded-2xl shadow-xl px-6 py-4 sm:px-8 sm:py-6 w-full max-w-sm sm:max-w-md">
+
+    <!-- Título -->
+    <h2 class="text-xl sm:text-2xl font-extrabold text-center text-[#FF5459] mb-3 sm:mb-4">
+      Login
+    </h2>
+
+    <!-- Formulário -->
+    <form id="loginForm" class="space-y-3">
+      <div>
+        <label class="block text-xs sm:text-sm font-medium text-gray-700">Email:</label>
+        <input type="email" id="email" placeholder="Digite seu email"
+          class="w-full px-3 py-2 border-2 border-red-300 rounded-md bg-[#ffefd8] text-gray-800 text-sm sm:text-base placeholder-gray-500 focus:border-[#ff5459] focus:bg-[#fffaf5] outline-none transition"
+          required />
+      </div>
+
+      <div>
+        <label class="block text-xs sm:text-sm font-medium text-gray-700">Senha:</label>
+        <input type="password" id="senha" placeholder="Digite sua senha"
+          class="w-full px-3 py-2 border-2 border-red-300 rounded-md bg-[#ffefd8] text-gray-800 text-sm sm:text-base placeholder-gray-500 focus:border-[#ff5459] focus:bg-[#fffaf5] outline-none transition"
+          required />
+      </div>
+
+      <!-- Link para cadastro -->
+      <div class="text-center pt-2">
+        <p class="text-sm text-gray-600">
+          Não tem conta? 
+          <a href="cadastro.html" class="text-[#FF5459] font-semibold hover:underline ml-1">
+            Cadastre-se
+          </a>
+        </p>
+      </div>
+
+      <!-- Rodapé com logo + botão -->
+      <div class="flex items-center justify-between pt-3">
+        <!-- Logo reduzida no mobile -->
+        <img src="img/Reduzido vertical_Humanize-6.png" alt="Humanize logo" class="h-12 sm:h-16 object-contain">
+
+        <!-- Botão adaptável -->
+        <button type="submit" id="submitBtn"
+          class="w-32 sm:w-40 py-2 sm:py-3 rounded-md font-semibold text-white shadow-md bg-gradient-to-r from-[#FF5459] to-[#FF9C19] hover:opacity-90 transition text-sm sm:text-base">
+          Entrar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://aoyycbedxetmnavmhesf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFveXljYmVkeGV0bW5hdm1oZXNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMDM2NDEsImV4cCI6MjA3MjU3OTY0MX0.M8m4i7xvYRBEBVwIZaEfQjoMU_ND2qi1GYx9zGK9wqA';
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const submitBtn = document.getElementById('submitBtn');
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const senha = document.getElementById('senha').value;
+
+    // Desabilitar botão durante o login
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Entrando...';
+    submitBtn.classList.add('opacity-50');
+
+    try {
+        console.log('=== TENTATIVA DE LOGIN ===');
+        console.log('Email:', email);
+
+        // VERIFICAÇÃO DO ADMIN
+        if (email === 'agenciahumanize@admin.com' && senha === 'humanize') {
+            console.log('Login admin detectado');
+            
+            // SALVAR ADMIN NO LOCALSTORAGE
+            const usuarioAdmin = {
+                logado: true,
+                id: 'admin',
+                nome: 'Administrador',
+                email: email,
+                tipo: 'admin',
+                dataLogin: new Date().toISOString()
+            };
+            
+            localStorage.setItem('usuarioLogado', JSON.stringify(usuarioAdmin));
+            console.log('Admin salvo no localStorage:', usuarioAdmin);
+            
+            alert('Login administrativo realizado com sucesso!');
+            window.location.href = "./admin.html";
+            return;
+        }
+
+        // BUSCAR USUÁRIO NORMAL
+        console.log('Buscando usuário no banco...');
+        const { data: cliente, error } = await client
+            .from('clientes')
+            .select('id, nome, email')
+            .eq('email', email)
+            .single();
+
+        if (error) {
+            console.error('Erro ao buscar cliente:', error);
+            if (error.code === 'PGRST116') { // Registro não encontrado
+                const cadastrar = confirm('Email não encontrado! Deseja se cadastrar?');
+                if (cadastrar) {
+                    window.location.href = "./cadastro.html";
+                }
+            } else {
+                alert('Erro ao verificar login: ' + error.message);
+            }
+            resetarBotao();
+            return;
+        }
+
+        if (cliente) {
+            console.log('Cliente encontrado:', cliente);
+            
+            // SALVAR USUÁRIO NO LOCALSTORAGE
+            const usuarioLogado = {
+                logado: true,
+                id: cliente.id,
+                nome: cliente.nome,
+                email: cliente.email,
+                tipo: 'cliente',
+                dataLogin: new Date().toISOString()
+            };
+            
+            localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+            console.log('Usuário salvo no localStorage:', usuarioLogado);
+            
+            // VERIFICAR SE SALVOU CORRETAMENTE
+            const verificarStorage = localStorage.getItem('usuarioLogado');
+            console.log('Verificação do localStorage:', verificarStorage);
+            
+            alert(`Login realizado com sucesso! Bem-vindo, ${cliente.nome || 'Usuário'}!`);
+            
+            // Redirecionar após breve delay para garantir que salvou
+            setTimeout(() => {
+                window.location.href = "./cliente.html";
+            }, 500);
+            
+        } else {
+            console.log('Cliente não encontrado');
+            const cadastrar = confirm('Email não cadastrado! Deseja se cadastrar?');
+            if (cadastrar) {
+                window.location.href = "./cadastro.html";
+            }
+            resetarBotao();
+        }
+
+    } catch (error) {
+        console.error('Erro inesperado:', error);
+        alert('Erro inesperado: ' + error.message);
+        resetarBotao();
+    }
+});
+
+function resetarBotao() {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Entrar';
+    submitBtn.classList.remove('opacity-50');
+}
+
+// Função para debug - ver localStorage atual
+console.log('Estado atual do localStorage:', localStorage.getItem('usuarioLogado'));
+  </script>
+
+</body>
+
+</html>

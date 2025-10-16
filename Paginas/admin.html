@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Admin - Humanize</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @media (max-width: 768px) {
+    /* Estilos adicionais para melhorar a responsividade */
+    .table-responsive {
+      overflow-x: auto;
+      display: block;
+      width: 100%;
+    }
+  }
+
+.salvar-btn {
+  transition: all 0.3s ease;
+}
+
+.salvar-btn:hover {
+  background-color: #059669 !important; /* green-600 */
+  transform: scale(1.05);
+}
+
+.salvar-btn:active {
+  transform: scale(0.95);
+}
+
+.status-select {
+  min-width: 140px;
+}
+
+</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col md:flex-row">
+
+<!-- Sidebar Admin -->
+<aside class="w-full md:w-72 bg-[#FF5A5F] text-white flex flex-col justify-between p-4 md:p-6">
+  <div>
+    <div class="mb-4 md:mb-6 flex justify-between items-center">
+      <img src="img/Logo completo_Humanize-3.png" alt="Logo" class="max-w-[120px] md:max-w-[150px]">
+      <!-- Botão de toggle para mobile -->
+      <button id="sidebarToggle" class="md:hidden text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+    <nav id="sidebarNav" class="flex flex-col gap-2 md:gap-4">
+      <a href="#" class="hover:bg-white/20 px-4 py-2 rounded">Dashboard</a>
+      <a href="index2.html" class="hover:bg-white/20 px-4 py-2 rounded">Início</a>
+      <button id="logoutBtn" class="hover:bg-white/20 px-4 py-2 rounded text-left">Sair</button>
+    </nav>
+  </div>
+  <div class="text-sm font-semibold mt-4 md:mt-0">Admin</div>
+</aside>
+
+<main class="flex-1 p-4 md:p-8 overflow-auto">
+  <h1 class="text-2xl md:text-3xl font-bold mb-6 text-[#FF5459]">Dashboard Admin</h1>
+
+  <!-- Lista de clientes -->
+  <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 md:mb-8">
+    <h2 class="text-lg md:text-xl font-semibold mb-4">Lista de Clientes</h2>
+    <div class="table-responsive">
+      <table class="w-full table-auto text-left border">
+        <thead>
+          <tr class="bg-[#FF9C19] text-white">
+            <th class="px-2 md:px-4 py-2">Nome</th>
+            <th class="px-2 md:px-4 py-2 hidden md:table-cell">Email</th>
+            <th class="px-2 md:px-4 py-2">Empresa</th>
+            <th class="px-2 md:px-4 py-2 hidden sm:table-cell">Nicho</th>
+            <th class="px-2 md:px-4 py-2">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="clientesTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Detalhes do cliente -->
+  <div id="clienteDetalhes" class="bg-white shadow-md rounded-lg p-4 md:p-6 hidden">
+    <h2 class="text-lg md:text-xl font-semibold mb-4">Detalhes do Cliente: <span id="clienteNome"></span></h2>
+    
+    <h3 class="font-semibold mb-2">Pedidos</h3>
+    <div class="table-responsive">
+      <table class="w-full table-auto text-left border mb-4">
+        <thead>
+          <tr class="bg-[#FF9C19] text-white">
+            <th class="px-2 md:px-4 py-2">Produto</th>
+            <th class="px-2 md:px-4 py-2">Status</th>
+            <th class="px-2 md:px-4 py-2">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="pedidosTableBody"></tbody>
+      </table>
+    </div>
+
+    <h3 class="font-semibold mb-2">Adicionar Produto</h3>
+    <div class="flex flex-col sm:flex-row gap-2">
+      <input type="text" id="novoProdutoInput" placeholder="Produto solicitado" class="flex-1 p-2 border rounded">
+      <select id="novoStatusSelect" class="p-2 border rounded">
+        <option value="pendente">Pendente</option>
+        <option value="em andamento">Em andamento</option>
+        <option value="concluido">Concluído</option>
+      </select>
+      <button id="addProdutoBtn" class="px-4 py-2 bg-[#FF5459] text-white rounded">Adicionar</button>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+const SUPABASE_URL = 'https://aoyycbedxetmnavmhesf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFveXljYmVkeGV0bW5hdm1oZXNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMDM2NDEsImV4cCI6MjA3MjU3OTY0MX0.M8m4i7xvYRBEBVwIZaEfQjoMU_ND2qi1GYx9zGK9wqA';
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const clientesTableBody = document.getElementById('clientesTableBody');
+const clienteDetalhes = document.getElementById('clienteDetalhes');
+const clienteNomeEl = document.getElementById('clienteNome');
+const pedidosTableBody = document.getElementById('pedidosTableBody');
+const novoProdutoInput = document.getElementById('novoProdutoInput');
+const novoStatusSelect = document.getElementById('novoStatusSelect');
+const addProdutoBtn = document.getElementById('addProdutoBtn');
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebarNav = document.getElementById('sidebarNav');
+
+let clienteAtualId = null;
+let sidebarVisible = false;
+
+// Toggle sidebar em dispositivos móveis
+sidebarToggle.addEventListener('click', function() {
+  sidebarVisible = !sidebarVisible;
+  if (sidebarVisible) {
+    sidebarNav.classList.remove('hidden');
+    sidebarNav.classList.add('flex');
+  } else {
+    sidebarNav.classList.add('hidden');
+    sidebarNav.classList.remove('flex');
+  }
+});
+
+// Carregar clientes
+async function carregarClientes() {
+  const { data: clientes, error } = await client
+    .from('clientes')
+    .select('id, nome, email, empresa, nichos(nome)')
+    .order('nome');
+
+  if (error) { alert('Erro ao carregar clientes: ' + error.message); return; }
+
+  clientesTableBody.innerHTML = '';
+  clientes.forEach(cliente => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b';
+    tr.innerHTML = `
+      <td class="px-2 md:px-4 py-2">${cliente.nome}</td>
+      <td class="px-2 md:px-4 py-2 hidden md:table-cell">${cliente.email}</td>
+      <td class="px-2 md:px-4 py-2">${cliente.empresa || '-'}</td>
+      <td class="px-2 md:px-4 py-2 hidden sm:table-cell">${cliente.nichos ? cliente.nichos.nome : '-'}</td>
+      <td class="px-2 md:px-4 py-2">
+        <button class="px-2 py-1 bg-[#FF9C19] text-white rounded text-sm" onclick="selecionarCliente('${cliente.id}', '${cliente.nome}')">Selecionar</button>
+      </td>
+    `;
+    clientesTableBody.appendChild(tr);
+  });
+}
+
+// Selecionar cliente
+window.selecionarCliente = async function(id, nome) {
+  clienteAtualId = id;
+  clienteNomeEl.textContent = nome;
+  clienteDetalhes.classList.remove('hidden');
+  await carregarPedidos();
+}
+
+// Carregar pedidos (com produtos)
+async function carregarPedidos() {
+  if (!clienteAtualId) return;
+  const { data: pedidos, error } = await client
+    .from('pedidos')
+    .select('id, status, pedido_produtos(servicos(nome), quantidade)')
+    .eq('cliente_id', clienteAtualId);
+
+  if (error) { alert('Erro ao carregar pedidos: ' + error.message); return; }
+
+  pedidosTableBody.innerHTML = '';
+  pedidos.forEach(pedido => {
+    pedido.pedido_produtos.forEach(pp => {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b';
+      tr.innerHTML = `
+        <td class="px-2 md:px-4 py-2">${pp.servicos.nome} (x${pp.quantidade})</td>
+        <td class="px-2 md:px-4 py-2">
+          <select class="border rounded p-1 text-sm" onchange="atualizarStatus('${pedido.id}', this.value)">
+            <option value="pendente" ${pedido.status === 'pendente' ? 'selected' : ''}>Pendente</option>
+            <option value="em andamento" ${pedido.status === 'em andamento' ? 'selected' : ''}>Em andamento</option>
+            <option value="concluido" ${pedido.status === 'concluido' ? 'selected' : ''}>Concluído</option>
+          </select>
+        </td>
+        <td class="px-2 md:px-4 py-2">
+          <button class="px-2 py-1 bg-[#FF5459] text-white rounded text-sm" onclick="removerPedido('${pedido.id}')">Remover</button>
+        </td>
+      `;
+      pedidosTableBody.appendChild(tr);
+    });
+  });
+}
+
+// Adicionar produto
+addProdutoBtn.addEventListener('click', async () => {
+  const produtoNome = novoProdutoInput.value.trim();
+  const status = novoStatusSelect.value;
+  if (!produtoNome) { alert('Digite o produto'); return; }
+  if (!clienteAtualId) { alert('Selecione um cliente'); return; }
+
+  // Buscar serviço pelo nome
+  let { data: servico } = await client.from('servicos').select('id').eq('nome', produtoNome).single();
+
+  if (!servico) {
+    // Criar serviço se não existir
+    let { data: novoServico } = await client.from('servicos').insert({ nome: produtoNome }).select().single();
+    servico = novoServico;
+  }
+
+  // Criar pedido
+  const { data: pedido } = await client.from('pedidos')
+    .insert({ cliente_id: clienteAtualId, status })
+    .select()
+    .single();
+
+  // Inserir produto no pedido
+  await client.from('pedido_produtos').insert({
+    pedido_id: pedido.id,
+    servico_id: servico.id,
+    quantidade: 1
+  });
+
+  novoProdutoInput.value = '';
+  await carregarPedidos();
+});
+
+// Atualizar status do pedido
+window.atualizarStatus = async (pedidoId, novoStatus) => {
+  const { error } = await client.from('pedidos').update({ status: novoStatus }).eq('id', pedidoId);
+  if (error) { alert('Erro ao atualizar status: ' + error.message); }
+}
+
+// Remover pedido
+window.removerPedido = async (pedidoId) => {
+  if (!confirm('Deseja realmente remover este pedido?')) return;
+  await client.from('pedidos').delete().eq('id', pedidoId);
+  await carregarPedidos();
+}
+
+carregarClientes();
+
+// Logout
+logoutBtn.addEventListener('click', function() {
+  localStorage.removeItem('usuarioLogado');
+  window.location.href = 'index2.html';
+});
+// Função para salvar alterações do status
+async function salvarAlteracoesStatus(pedidoId, novoStatus) {
+  try {
+    console.log('Atualizando pedido:', pedidoId, 'para status:', novoStatus);
+    
+    // Atualizar status no banco
+    const { data, error } = await client
+      .from('pedidos')
+      .update({ 
+        status: novoStatus,
+        atualizado_em: new Date().toISOString()
+      })
+      .eq('id', pedidoId)
+      .select('*, cliente_id, clientes(nome, email)')
+      .single();
+
+    if (error) {
+      console.error('Erro ao atualizar pedido:', error);
+      alert('Erro ao atualizar status: ' + error.message);
+      return;
+    }
+
+    console.log('Pedido atualizado:', data);
+    
+    // Notificar o cliente
+    await notificarClienteStatus(pedidoId, novoStatus, data.cliente_id, data.clientes);
+    
+    alert('✅ Status atualizado com sucesso! Cliente notificado.');
+    
+    // Recarregar os pedidos
+    await carregarPedidos();
+    
+  } catch (err) {
+    console.error('Erro geral:', err);
+    alert('Erro ao processar atualização');
+  }
+}
+
+// Função melhorada para notificar cliente
+async function notificarClienteStatus(pedidoId, novoStatus, clienteId, clienteInfo) {
+  try {
+    // Buscar informações do pedido para a mensagem
+    const { data: pedidoCompleto } = await client
+      .from('pedidos')
+      .select(`
+        *,
+        pedido_produtos(
+          quantidade,
+          servicos(nome)
+        )
+      `)
+      .eq('id', pedidoId)
+      .single();
+
+    const produtoNome = pedidoCompleto.pedido_produtos[0]?.servicos?.nome || 'seu pedido';
+    const clienteNome = clienteInfo?.nome || 'Cliente';
+
+    // Criar notificação
+    const { error } = await client
+      .from('notificacoes')
+      .insert({
+        cliente_id: clienteId,
+        pedido_id: pedidoId,
+        tipo: 'status_pedido',
+        mensagem: `Olá ${clienteNome}! O status do pedido "${produtoNome}" foi atualizado para: ${novoStatus}`,
+        lida: false
+      });
+
+    if (error) {
+      console.error('Erro ao criar notificação:', error);
+    } else {
+      console.log('Notificação enviada para cliente:', clienteId);
+    }
+
+  } catch (error) {
+    console.error('Erro no processo de notificação:', error);
+  }
+}
+
+// Modificar a função carregarPedidos para o novo formato
+async function carregarPedidos() {
+  if (!clienteAtualId) return;
+  
+  try {
+    const { data: pedidos, error } = await client
+      .from('pedidos')
+      .select(`
+        id, 
+        status, 
+        cliente_id,
+        criado_em,
+        pedido_produtos(
+          id,
+          quantidade,
+          servicos(nome)
+        )
+      `)
+      .eq('cliente_id', clienteAtualId)
+      .order('criado_em', { ascending: false });
+
+    if (error) {
+      console.error('Erro ao carregar pedidos:', error);
+      alert('Erro ao carregar pedidos: ' + error.message);
+      return;
+    }
+
+    console.log('Pedidos carregados:', pedidos);
+    pedidosTableBody.innerHTML = '';
+
+    if (pedidos.length === 0) {
+      pedidosTableBody.innerHTML = `
+        <tr>
+          <td colspan="3" class="px-4 py-2 text-center text-gray-500">
+            Nenhum pedido encontrado para este cliente
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    pedidos.forEach(pedido => {
+      pedido.pedido_produtos.forEach(pp => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b hover:bg-gray-50';
+        tr.innerHTML = `
+          <td class="px-4 py-3">
+            <div class="font-medium">${pp.servicos.nome}</div>
+            <div class="text-sm text-gray-500">Quantidade: ${pp.quantidade}</div>
+            <div class="text-xs text-gray-400">Pedido: ${new Date(pedido.criado_em).toLocaleDateString('pt-BR')}</div>
+          </td>
+          <td class="px-4 py-3">
+            <select class="border rounded px-3 py-2 w-full status-select" data-pedido-id="${pedido.id}">
+              <option value="pendente" ${pedido.status === 'pendente' ? 'selected' : ''}>⏳ Pendente</option>
+              <option value="em andamento" ${pedido.status === 'em andamento' ? 'selected' : ''}>🚀 Em andamento</option>
+              <option value="concluido" ${pedido.status === 'concluido' ? 'selected' : ''}>✅ Concluído</option>
+            </select>
+          </td>
+          <td class="px-4 py-3">
+            <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition salvar-btn" data-pedido-id="${pedido.id}">
+              💾 Salvar
+            </button>
+            <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition ml-2" onclick="removerPedido('${pedido.id}')">
+              🗑 Remover
+            </button>
+          </td>
+        `;
+        pedidosTableBody.appendChild(tr);
+      });
+    });
+
+    // Re-adicionar event listeners
+    adicionarEventListenersSalvar();
+    
+  } catch (err) {
+    console.error('Erro geral ao carregar pedidos:', err);
+  }
+}
+
+// Função para adicionar event listeners aos botões de salvar
+function adicionarEventListenersSalvar() {
+  // Remover listeners antigos
+  document.querySelectorAll('.salvar-btn').forEach(btn => {
+    btn.replaceWith(btn.cloneNode(true));
+  });
+
+  // Adicionar novos listeners
+  document.querySelectorAll('.salvar-btn').forEach(btn => {
+    btn.addEventListener('click', async function() {
+      const pedidoId = this.getAttribute('data-pedido-id');
+      const select = document.querySelector(`.status-select[data-pedido-id="${pedidoId}"]`);
+      const novoStatus = select.value;
+      
+      // Mostrar loading
+      this.innerHTML = '⏳ Salvando...';
+      this.disabled = true;
+      
+      await salvarAlteracoesStatus(pedidoId, novoStatus);
+      
+      // Restaurar botão
+      this.innerHTML = '💾 Salvar';
+      this.disabled = false;
+    });
+  });
+}
+/// Modificar a função carregarPedidos para incluir botão de salvar
+async function carregarPedidos() {
+  if (!clienteAtualId) return;
+  const { data: pedidos, error } = await client
+    .from('pedidos')
+    .select('id, status, cliente_id, pedido_produtos(servicos(nome), quantidade)')
+    .eq('cliente_id', clienteAtualId);
+
+  if (error) { alert('Erro ao carregar pedidos: ' + error.message); return; }
+
+  pedidosTableBody.innerHTML = '';
+  pedidos.forEach(pedido => {
+    pedido.pedido_produtos.forEach(pp => {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b';
+      tr.innerHTML = `
+        <td class="px-2 md:px-4 py-2">${pp.servicos.nome} (x${pp.quantidade})</td>
+        <td class="px-2 md:px-4 py-2">
+          <select class="border rounded p-1 text-sm status-select" data-pedido-id="${pedido.id}">
+            <option value="pendente" ${pedido.status === 'pendente' ? 'selected' : ''}>Pendente</option>
+            <option value="em andamento" ${pedido.status === 'em andamento' ? 'selected' : ''}>Em andamento</option>
+            <option value="concluido" ${pedido.status === 'concluido' ? 'selected' : ''}>Concluído</option>
+          </select>
+        </td>
+        <td class="px-2 md:px-4 py-2">
+          <button class="px-2 py-1 bg-green-500 text-white rounded text-sm salvar-btn" data-pedido-id="${pedido.id}">
+            Salvar
+          </button>
+          <button class="px-2 py-1 bg-[#FF5459] text-white rounded text-sm ml-2" onclick="removerPedido('${pedido.id}')">
+            Remover
+          </button>
+        </td>
+      `;
+      pedidosTableBody.appendChild(tr);
+    });
+  });
+
+  // Adicionar event listeners aos botões de salvar
+  adicionarEventListenersSalvar();
+}
+
+// Função para adicionar event listeners aos botões de salvar
+function adicionarEventListenersSalvar() {
+  const salvarBtns = document.querySelectorAll('.salvar-btn');
+  
+  salvarBtns.forEach(btn => {
+    btn.addEventListener('click', async function() {
+      const pedidoId = this.getAttribute('data-pedido-id');
+      const select = document.querySelector(`.status-select[data-pedido-id="${pedidoId}"]`);
+      const novoStatus = select.value;
+      
+      await salvarAlteracoesStatus(pedidoId, novoStatus);
+    });
+  });
+}
+
+// Função para salvar alterações e notificar cliente
+async function salvarAlteracoesStatus(pedidoId, novoStatus) {
+  // Buscar o cliente_id do pedido
+  const { data: pedido, error: pedidoError } = await client
+    .from('pedidos')
+    .select('cliente_id')
+    .eq('id', pedidoId)
+    .single();
+
+  if (pedidoError) {
+    alert('Erro ao buscar dados do pedido: ' + pedidoError.message);
+    return;
+  }
+
+  // Atualizar status no banco
+  const { error } = await client
+    .from('pedidos')
+    .update({ status: novoStatus })
+    .eq('id', pedidoId);
+
+  if (error) { 
+    alert('Erro ao atualizar status: ' + error.message); 
+    return;
+  }
+  
+  // Notificar o cliente sobre a mudança
+  await notificarClienteStatus(pedidoId, novoStatus, pedido.cliente_id);
+  
+  alert('Status atualizado e cliente notificado!');
+  
+  // Recarregar os pedidos para refletir as mudanças
+  await carregarPedidos();
+}
+
+// Função para notificar cliente (mantém a mesma do exemplo anterior)
+async function notificarClienteStatus(pedidoId, novoStatus, clienteId) {
+  // Buscar nome do produto para a mensagem
+  const { data: pedidoInfo } = await client
+    .from('pedidos')
+    .select(`
+      pedido_produtos(
+        servicos(nome)
+      )
+    `)
+    .eq('id', pedidoId)
+    .single();
+
+  const produtoNome = pedidoInfo.pedido_produtos[0]?.servicos?.nome || 'Produto';
+
+  const { error } = await client
+    .from('notificacoes')
+    .insert({
+      cliente_id: clienteId,
+      pedido_id: pedidoId,
+      tipo: 'status_pedido',
+      mensagem: `Status do pedido "${produtoNome}" foi alterado para: ${novoStatus}`,
+      lida: false
+    });
+
+  if (error) {
+    console.error('Erro ao enviar notificação:', error);
+  }
+}
+</script>
+
+</body>
+</html>

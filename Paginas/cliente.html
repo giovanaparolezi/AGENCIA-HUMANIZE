@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Área do Cliente - Humanize</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-[#FF5A5F] text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <img src="img/Logo completo_Humanize-3.png" alt="Logo" class="h-10">
+      <nav class="flex gap-4">
+        <a href="index2.html" class="hover:bg-white/20 px-3 py-1 rounded">Início</a>
+        <button id="logoutBtn" class="hover:bg-white/20 px-3 py-1 rounded">Sair</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-[#FF5459]">Minha Área</h1>
+
+    <!-- Informações do Cliente -->
+    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+      <h2 class="text-xl font-semibold mb-4">Meus Dados</h2>
+      <div id="clienteInfo" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Os dados serão preenchidos via JavaScript -->
+      </div>
+    </div>
+
+    <!-- Meus Pedidos -->
+    <div class="bg-white shadow-md rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">Meus Pedidos</h2>
+      <table class="w-full table-auto text-left border">
+        <thead>
+          <tr class="bg-[#FF9C19] text-white">
+            <th class="px-4 py-2">Produto/Serviço</th>
+            <th class="px-4 py-2">Status</th>
+            <th class="px-4 py-2">Data</th>
+          </tr>
+        </thead>
+        <tbody id="meusPedidosTableBody">
+          <tr>
+            <td colspan="3" class="px-4 py-2 text-center">Carregando...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Solicitar Novo Serviço -->
+    <div class="bg-white shadow-md rounded-lg p-6 mt-8">
+      <h2 class="text-xl font-semibold mb-4">Solicitar Novo Serviço</h2>
+      <div class="flex gap-2">
+        <input type="text" id="novoServicoInput" placeholder="Descreva o serviço desejado" class="flex-1 p-2 border rounded">
+        <button id="solicitarServicoBtn" class="px-4 py-2 bg-[#FF5459] text-white rounded">Solicitar</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://aoyycbedxetmnavmhesf.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFveXljYmVkeGV0bW5hdm1oZXNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMDM2NDEsImV4cCI6MjA3MjU3OTY0MX0.M8m4i7xvYRBEBVwIZaEfQjoMU_ND2qi1GYx9zGK9wqA';
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const clienteInfo = document.getElementById('clienteInfo');
+    const meusPedidosTableBody = document.getElementById('meusPedidosTableBody');
+    const novoServicoInput = document.getElementById('novoServicoInput');
+    const solicitarServicoBtn = document.getElementById('solicitarServicoBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    let clienteAtual = null;
+// Verificar se está logado ao carregar a página do cliente
+document.addEventListener('DOMContentLoaded', function() {
+    function verificarLogin() {
+        const usuarioSalvo = localStorage.getItem('usuarioLogado');
+        
+        if (usuarioSalvo) {
+            const usuario = JSON.parse(usuarioSalvo);
+            return usuario.logado ? usuario : null;
+        }
+        
+        return null;
+    }
+
+    const usuario = verificarLogin();
+    
+    if (!usuario) {
+        alert('Você precisa estar logado para acessar esta página!');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // Se chegou aqui, usuário está logado - carregar conteúdo da área do cliente
+    console.log('Bem-vindo à área do cliente,', usuario.nome);
+});
+// Verificar se o usuário está logado
+function verificarEAutenticar() {
+  const usuarioSalvo = localStorage.getItem('usuarioLogado');
+  
+  if (!usuarioSalvo) {
+    // Não está logado, redirecionar para login
+    window.location.href = 'login.html';
+    return null;
+  }
+
+  const usuario = JSON.parse(usuarioSalvo);
+  
+  if (usuario.tipo === 'admin') {
+    // Admin tentando acessar área do cliente? Redirecionar para dashboard
+    window.location.href = 'admin.html';
+    return null;
+  }
+
+  return usuario;
+}
+
+    // Carregar dados do cliente
+async function carregarDadosCliente() {
+  clienteAtual = verificarEAutenticar();
+  
+  if (!clienteAtual) return;
+
+  // Buscar dados completos do cliente do banco (para garantir que temos os dados mais recentes)
+  const { data: clienteCompleto, error } = await client
+    .from('clientes')
+    .select('*, nichos(nome)')
+    .eq('id', clienteAtual.id)
+    .single();
+
+  if (error) {
+    console.error('Erro ao buscar dados do cliente:', error);
+    // Usar dados salvos no localStorage como fallback
+    clienteCompleto = clienteAtual;
+  } else {
+    clienteAtual = clienteCompleto;
+  }
+
+  // Preencher informações do cliente
+  clienteInfo.innerHTML = `
+    <div>
+      <p><strong>Nome:</strong> ${clienteAtual.nome}</p>
+      <p><strong>Email:</strong> ${clienteAtual.email}</p>
+      <p><strong>Telefone:</strong> ${clienteAtual.celular || 'Não informado'}</p>
+    </div>
+    <div>
+      <p><strong>Empresa:</strong> ${clienteAtual.empresa || 'Não informada'}</p>
+      <p><strong>Nicho:</strong> ${clienteAtual.nichos ? clienteAtual.nichos.nome : 'Não informado'}</p>
+      <p><strong>Cadastrado em:</strong> ${new Date(clienteAtual.criado_em).toLocaleDateString('pt-BR')}</p>
+    </div>
+  `;
+
+  await carregarMeusPedidos();
+}
+
+
+    // Carregar pedidos do cliente
+    async function carregarMeusPedidos() {
+      if (!clienteAtual) return;
+
+      const { data: pedidos, error } = await client
+        .from('pedidos')
+        .select('id, status, criado_em, pedido_produtos(servicos(nome), quantidade)')
+        .eq('cliente_id', clienteAtual.id)
+        .order('criado_em', { ascending: false });
+
+      if (error) {
+        console.error('Erro ao carregar pedidos:', error);
+        meusPedidosTableBody.innerHTML = '<tr><td colspan="3" class="px-4 py-2 text-center">Erro ao carregar pedidos</td></tr>';
+        return;
+      }
+
+      meusPedidosTableBody.innerHTML = '';
+
+      if (pedidos.length === 0) {
+        meusPedidosTableBody.innerHTML = '<tr><td colspan="3" class="px-4 py-2 text-center">Nenhum pedido encontrado</td></tr>';
+        return;
+      }
+
+      pedidos.forEach(pedido => {
+        pedido.pedido_produtos.forEach(pp => {
+          const tr = document.createElement('tr');
+          tr.className = 'border-b';
+          tr.innerHTML = `
+            <td class="px-4 py-2">${pp.servicos.nome} (x${pp.quantidade})</td>
+            <td class="px-4 py-2">
+              <span class="px-2 py-1 rounded text-white ${
+                pedido.status === 'concluido' ? 'bg-green-500' :
+                pedido.status === 'em andamento' ? 'bg-yellow-500' :
+                'bg-red-500'
+              }">
+                ${pedido.status}
+              </span>
+            </td>
+            <td class="px-4 py-2">${new Date(pedido.criado_em).toLocaleDateString('pt-BR')}</td>
+          `;
+          meusPedidosTableBody.appendChild(tr);
+        });
+      });
+    }
+
+    // Solicitar novo serviço
+    solicitarServicoBtn.addEventListener('click', async () => {
+      if (!clienteAtual) return;
+
+      const servicoDescricao = novoServicoInput.value.trim();
+      if (!servicoDescricao) {
+        alert('Por favor, descreva o serviço desejado');
+        return;
+      }
+
+      try {
+        // Buscar serviço pelo nome ou criar novo
+        let { data: servico } = await client
+          .from('servicos')
+          .select('id')
+          .eq('nome', servicoDescricao)
+          .single();
+
+        if (!servico) {
+          // Criar serviço se não existir
+          const { data: novoServico } = await client
+            .from('servicos')
+            .insert({ nome: servicoDescricao })
+            .select()
+            .single();
+          servico = novoServico;
+        }
+
+        // Criar pedido
+        const { data: pedido } = await client
+          .from('pedidos')
+          .insert({ 
+            cliente_id: clienteAtual.id, 
+            status: 'pendente'
+          })
+          .select()
+          .single();
+
+        // Adicionar produto ao pedido
+        await client
+          .from('pedido_produtos')
+          .insert({
+            pedido_id: pedido.id,
+            servico_id: servico.id,
+            quantidade: 1
+          });
+
+        novoServicoInput.value = '';
+        alert('Serviço solicitado com sucesso!');
+        await carregarMeusPedidos();
+
+      } catch (error) {
+        console.error('Erro ao solicitar serviço:', error);
+        alert('Erro ao solicitar serviço. Tente novamente.');
+      }
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', async () => {
+      await client.auth.signOut();
+      window.location.href = 'index2.html';
+    });
+
+    // Inicializar
+    carregarDadosCliente();
+    // Logout
+logoutBtn.addEventListener('click', function() {
+  localStorage.removeItem('usuarioLogado');
+  window.location.href = 'index.html';
+});
+
+// Adicionar sistema de notificações em tempo real
+function inicializarNotificacoesTempoReal() {
+  const subscription = client
+    .from('notificacoes')
+    .on('INSERT', (payload) => {
+      if (payload.new.cliente_id === clienteAtual.id) {
+        mostrarNotificacao(payload.new);
+        // Recarregar os pedidos para mostrar status atualizado
+        carregarMeusPedidos();
+      }
+    })
+    .subscribe();
+
+  // Também monitorar mudanças diretas nos pedidos
+  const pedidosSubscription = client
+    .from('pedidos')
+    .on('UPDATE', (payload) => {
+      if (payload.new.cliente_id === clienteAtual.id) {
+        // Recarregar pedidos quando houver atualização
+        carregarMeusPedidos();
+        mostrarNotificacaoStatus(payload.new);
+      }
+    })
+    .subscribe();
+}
+
+function mostrarNotificacao(notificacao) {
+  // Criar notificação na interface
+  const notificationDiv = document.createElement('div');
+  notificationDiv.className = 'fixed top-4 right-4 bg-blue-500 text-white p-4 rounded-lg shadow-lg z-50';
+  notificationDiv.innerHTML = `
+    <div class="flex justify-between items-center">
+      <span>${notificacao.mensagem}</span>
+      <button onclick="this.parentElement.parentElement.remove()" class="ml-4">×</button>
+    </div>
+  `;
+  
+  document.body.appendChild(notificationDiv);
+  
+  // Remover automaticamente após 5 segundos
+  setTimeout(() => {
+    if (notificationDiv.parentElement) {
+      notificationDiv.remove();
+    }
+  }, 5000);
+}
+
+function mostrarNotificacaoStatus(pedido) {
+  const notificationDiv = document.createElement('div');
+  notificationDiv.className = 'fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50';
+  notificationDiv.innerHTML = `
+    <div class="flex justify-between items-center">
+      <span>Status do pedido atualizado: ${pedido.status}</span>
+      <button onclick="this.parentElement.parentElement.remove()" class="ml-4">×</button>
+    </div>
+  `;
+  
+  document.body.appendChild(notificationDiv);
+  
+  setTimeout(() => {
+    if (notificationDiv.parentElement) {
+      notificationDiv.remove();
+    }
+  }, 5000);
+}
+
+// Modificar a função carregarMeusPedidos para incluir sistema de notificações
+async function carregarMeusPedidos() {
+  if (!clienteAtual) return;
+
+  const { data: pedidos, error } = await client
+    .from('pedidos')
+    .select('id, status, criado_em, pedido_produtos(servicos(nome), quantidade)')
+    .eq('cliente_id', clienteAtual.id)
+    .order('criado_em', { ascending: false });
+
+  if (error) {
+    console.error('Erro ao carregar pedidos:', error);
+    meusPedidosTableBody.innerHTML = '<tr><td colspan="3" class="px-4 py-2 text-center">Erro ao carregar pedidos</td></tr>';
+    return;
+  }
+
+  meusPedidosTableBody.innerHTML = '';
+
+  if (pedidos.length === 0) {
+    meusPedidosTableBody.innerHTML = '<tr><td colspan="3" class="px-4 py-2 text-center">Nenhum pedido encontrado</td></tr>';
+    return;
+  }
+
+  pedidos.forEach(pedido => {
+    pedido.pedido_produtos.forEach(pp => {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b';
+      tr.innerHTML = `
+        <td class="px-4 py-2">${pp.servicos.nome} (x${pp.quantidade})</td>
+        <td class="px-4 py-2">
+          <span class="px-2 py-1 rounded text-white ${
+            pedido.status === 'concluido' ? 'bg-green-500' :
+            pedido.status === 'em andamento' ? 'bg-yellow-500' :
+            'bg-red-500'
+          }">
+            ${pedido.status}
+          </span>
+        </td>
+        <td class="px-4 py-2">${new Date(pedido.criado_em).toLocaleDateString('pt-BR')}</td>
+      `;
+      meusPedidosTableBody.appendChild(tr);
+    });
+  });
+}
+
+// Inicializar notificações quando carregar os dados do cliente
+async function carregarDadosCliente() {
+  clienteAtual = verificarEAutenticar();
+  
+  if (!clienteAtual) return;
+
+  const { data: clienteCompleto, error } = await client
+    .from('clientes')
+    .select('*, nichos(nome)')
+    .eq('id', clienteAtual.id)
+    .single();
+
+  if (error) {
+    console.error('Erro ao buscar dados do cliente:', error);
+    clienteCompleto = clienteAtual;
+  } else {
+    clienteAtual = clienteCompleto;
+  }
+
+  clienteInfo.innerHTML = `
+    <div>
+      <p><strong>Nome:</strong> ${clienteAtual.nome}</p>
+      <p><strong>Email:</strong> ${clienteAtual.email}</p>
+      <p><strong>Telefone:</strong> ${clienteAtual.celular || 'Não informado'}</p>
+    </div>
+    <div>
+      <p><strong>Empresa:</strong> ${clienteAtual.empresa || 'Não informada'}</p>
+      <p><strong>Nicho:</strong> ${clienteAtual.nichos ? clienteAtual.nichos.nome : 'Não informado'}</p>
+      <p><strong>Cadastrado em:</strong> ${new Date(clienteAtual.criado_em).toLocaleDateString('pt-BR')}</p>
+    </div>
+  `;
+
+  await carregarMeusPedidos();
+  // Inicializar sistema de notificações em tempo real
+  inicializarNotificacoesTempoReal();
+}
+
+// No cliente - verificar atualizações a cada 30 segundos
+function iniciarVerificacaoPeriodica() {
+  setInterval(async () => {
+    if (clienteAtual) {
+      await carregarMeusPedidos();
+    }
+  }, 30000); // 30 segundos
+}
+
+// Chamar no carregarDadosCliente()
+iniciarVerificacaoPeriodica();
+// Sistema de notificações em tempo real
+function inicializarNotificacoesTempoReal() {
+  console.log('Iniciando sistema de notificações...');
+  
+  // Escutar por novas notificações
+  const notificacoesSubscription = client
+    .from('notificacoes')
+    .on('INSERT', (payload) => {
+      console.log('Nova notificação recebida:', payload);
+      if (payload.new.cliente_id === clienteAtual.id) {
+        mostrarNotificacao(payload.new);
+        carregarMeusPedidos(); // Atualizar lista de pedidos
+      }
+    })
+    .subscribe();
+
+  // Escutar por atualizações nos pedidos
+  const pedidosSubscription = client
+    .from('pedidos')
+    .on('UPDATE', (payload) => {
+      console.log('Pedido atualizado:', payload);
+      if (payload.new.cliente_id === clienteAtual.id) {
+        mostrarNotificacaoStatus(payload.new);
+        carregarMeusPedidos(); // Atualizar lista
+      }
+    })
+    .subscribe();
+
+  return { notificacoesSubscription, pedidosSubscription };
+}
+
+// Função para mostrar notificação
+function mostrarNotificacao(notificacao) {
+  const notificationDiv = document.createElement('div');
+  notificationDiv.className = 'fixed top-4 right-4 bg-blue-500 text-white p-4 rounded-lg shadow-lg z-50 max-w-md animate-fade-in';
+  notificationDiv.innerHTML = `
+    <div class="flex items-start">
+      <div class="flex-shrink-0">🔔</div>
+      <div class="ml-3 flex-1">
+        <p class="text-sm font-medium">${notificacao.mensagem}</p>
+        <p class="text-xs opacity-80 mt-1">${new Date().toLocaleTimeString('pt-BR')}</p>
+      </div>
+      <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-lg hover:text-gray-200">×</button>
+    </div>
+  `;
+  
+  document.body.appendChild(notificationDiv);
+  
+  // Auto-remover após 8 segundos
+  setTimeout(() => {
+    if (notificationDiv.parentElement) {
+      notificationDiv.remove();
+    }
+  }, 8000);
+}
+
+// Função para mostrar notificação de status
+function mostrarNotificacaoStatus(pedido) {
+  const statusText = {
+    'pendente': '⏳ Pendente',
+    'em andamento': '🚀 Em andamento', 
+    'concluido': '✅ Concluído'
+  };
+  
+  const notificationDiv = document.createElement('div');
+  notificationDiv.className = 'fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 max-w-md animate-fade-in';
+  notificationDiv.innerHTML = `
+    <div class="flex items-start">
+      <div class="flex-shrink-0">📦</div>
+      <div class="ml-3 flex-1">
+        <p class="text-sm font-medium">Status do pedido atualizado!</p>
+        <p class="text-sm mt-1">Novo status: <strong>${statusText[pedido.status] || pedido.status}</strong></p>
+        <p class="text-xs opacity-80 mt-1">${new Date().toLocaleTimeString('pt-BR')}</p>
+      </div>
+      <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-lg hover:text-gray-200">×</button>
+    </div>
+  `;
+  
+  document.body.appendChild(notificationDiv);
+  
+  setTimeout(() => {
+    if (notificationDiv.parentElement) {
+      notificationDiv.remove();
+    }
+  }, 8000);
+}
+  </script>
+</body>
+</html>

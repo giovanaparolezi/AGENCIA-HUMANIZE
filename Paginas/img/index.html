@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfólio Humanize</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .swiper-slide { transition: all 0.4s ease; }
+    .swiper-slide:hover { transform: translateY(-10px) scale(1.02); }
+    .card-overlay {
+      background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.4), rgba(0,0,0,0));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .client-card:hover .card-overlay { opacity: 1; }
+    .modal-enter { animation: modalEnter 0.3s ease-out forwards; }
+    @keyframes modalEnter {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .swiper-pagination-bullet {
+      background: #e83c50 !important;
+      opacity: 0.6;
+    }
+    .swiper-pagination-bullet-active {
+      opacity: 1;
+      transform: scale(1.3);
+    }
+  </style>
+</head>
+<body class="bg-[#fffaf7] text-[#333]">
+
+  <!-- seção principal -->
+  <div class="max-w-7xl mx-auto px-6 py-16">
+    <h2 class="text-3xl lg:text-4xl font-semibold leading-snug mb-12 text-center">
+      Confira as marcas que <span class="text-[#e83c50] font-bold">confiaram</span> na Humanize <br>
+      para <span class="text-[#e83c50] font-bold">transformar</span> sua comunicação
+    </h2>
+
+    <!-- carrossel -->
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+
+        <!-- card -->
+        <div class="swiper-slide">
+          <div class="client-card relative rounded-xl overflow-hidden shadow-xl cursor-pointer group">
+            <img src="https://placehold.co/600x400/333/FFF?text=Folk+Store" class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110">
+            <div class="card-overlay absolute inset-0 flex flex-col justify-end p-6">
+              <h3 class="text-white text-2xl font-bold">FOLK STORE</h3>
+              <button onclick="openModal('folkstore')" class="mt-3 bg-[#e83c50] px-5 py-2 rounded-lg text-white font-semibold hover:bg-[#c52a3d] transition w-fit">CONFIRA</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- card -->
+        <div class="swiper-slide">
+          <div class="client-card relative rounded-xl overflow-hidden shadow-xl cursor-pointer group">
+            <img src="https://placehold.co/600x400/555/FFF?text=Raissa+Martins" class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110">
+            <div class="card-overlay absolute inset-0 flex flex-col justify-end p-6">
+              <h3 class="text-white text-2xl font-bold">RAISSA MARTINS</h3>
+              <button onclick="openModal('raissa')" class="mt-3 bg-[#e83c50] px-5 py-2 rounded-lg text-white font-semibold hover:bg-[#c52a3d] transition w-fit">CONFIRA</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- card -->
+        <div class="swiper-slide">
+          <div class="client-card relative rounded-xl overflow-hidden shadow-xl cursor-pointer group">
+            <img src="https://placehold.co/600x400/777/FFF?text=Advocacia+Fenerich" class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110">
+            <div class="card-overlay absolute inset-0 flex flex-col justify-end p-6">
+              <h3 class="text-white text-2xl font-bold">ADVOCACIA FENERICH</h3>
+              <button onclick="openModal('fenerich')" class="mt-3 bg-[#e83c50] px-5 py-2 rounded-lg text-white font-semibold hover:bg-[#c52a3d] transition w-fit">CONFIRA</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- card -->
+        <div class="swiper-slide">
+          <div class="client-card relative rounded-xl overflow-hidden shadow-xl cursor-pointer group">
+            <img src="https://placehold.co/600x400/999/FFF?text=Mariane+Menezes" class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110">
+            <div class="card-overlay absolute inset-0 flex flex-col justify-end p-6">
+              <h3 class="text-white text-2xl font-bold">MARIANE MENEZES</h3>
+              <button onclick="openModal('mariane')" class="mt-3 bg-[#e83c50] px-5 py-2 rounded-lg text-white font-semibold hover:bg-[#c52a3d] transition w-fit">CONFIRA</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- botões e paginação -->
+      <div class="swiper-pagination mt-6"></div>
+      <div class="swiper-button-next !text-[#e83c50]"></div>
+      <div class="swiper-button-prev !text-[#e83c50]"></div>
+    </div>
+  </div>
+
+  <!-- faixa laranja (mantida igual ao original) -->
+  <div class="relative bg-gradient-to-r from-orange-500 to-orange-600 text-white text-center py-8 font-bold text-2xl">
+    <div class="absolute top-0 left-0 w-full h-full bg-[#e83c50]/20 skew-y-3"></div>
+    <p class="relative">+DE 50 CLIENTES ATENDIDOS EM</p>
+    <small class="relative block mt-2 text-lg font-medium">MONTE ALTO, JABOTICABAL, TAQUARITINGA, PIRANGI, CRAVINHOS, BARRINHA E RIBEIRÃO PRETO.</small>
+  </div>
+
+  <!-- modal -->
+  <div id="modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden modal-enter relative">
+      <button onclick="closeModal()" class="absolute top-4 right-4 bg-white rounded-full p-2 shadow hover:bg-gray-100">
+        ✕
+      </button>
+      <div class="p-6 border-b">
+        <h3 id="modalTitle" class="text-2xl font-bold"></h3>
+      </div>
+      <div class="swiper modalSwiper !pb-12">
+        <div class="swiper-wrapper" id="modalContent"></div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalContent = document.getElementById('modalContent');
+    let modalSwiper;
+
+    const clientContents = {
+      folkstore: [
+        '<div class="p-4"><img src="https://placehold.co/800x500/333/FFF?text=Folk+Store+1" class="w-full rounded-lg"></div>',
+        '<div class="p-4"><img src="https://placehold.co/800x500/444/FFF?text=Folk+Store+2" class="w-full rounded-lg"></div>',
+      ],
+      raissa: [
+        '<div class="p-4"><img src="https://placehold.co/800x500/555/FFF?text=Raissa+1" class="w-full rounded-lg"></div>'
+      ],
+      fenerich: [
+        '<div class="p-4"><img src="https://placehold.co/800x500/666/FFF?text=Advocacia+1" class="w-full rounded-lg"></div>'
+      ],
+      mariane: [
+        '<div class="p-4"><img src="https://placehold.co/800x500/777/FFF?text=Mariane+1" class="w-full rounded-lg"></div>'
+      ]
+    };
+
+    const clientNames = {
+      folkstore: "FOLK STORE",
+      raissa: "RAISSA MARTINS",
+      fenerich: "ADVOCACIA FENERICH",
+      mariane: "MARIANE MENEZES"
+    };
+
+    function openModal(client) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      modalTitle.textContent = clientNames[client];
+      modalContent.innerHTML = '';
+      clientContents[client].forEach(item => {
+        const slide = document.createElement('div');
+        slide.classList.add('swiper-slide');
+        slide.innerHTML = item;
+        modalContent.appendChild(slide);
+      });
+      if (modalSwiper) modalSwiper.destroy(true, true);
+      modalSwiper = new Swiper('.modalSwiper', {
+        loop: true,
+        pagination: { el: '.swiper-pagination', clickable: true },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
+      });
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = 'auto';
+      if (modalSwiper) { modalSwiper.destroy(true, true); modalSwiper = null; }
+    }
+
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    const mainSwiper = new Swiper('.mySwiper', {
+      loop: true,
+      slidesPerView: 1,
+      spaceBetween: 30,
+      autoplay: { delay: 3500, disableOnInteraction: false },
+      pagination: { el: '.swiper-pagination', clickable: true },
+      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+      breakpoints: { 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }
+    });
+  </script>
+</body>
+</html>

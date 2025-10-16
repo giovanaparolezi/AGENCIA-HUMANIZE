@@ -1,0 +1,354 @@
+
+-- ========================================
+-- 1. Nichos
+-- ========================================
+CREATE TABLE nichos (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome TEXT NOT NULL UNIQUE
+);
+
+-- ========================================
+-- 2. Serviços/Produtos
+-- ========================================
+CREATE TABLE servicos (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome TEXT NOT NULL UNIQUE,
+    preco NUMERIC(10,2) DEFAULT 0
+);
+
+-- ========================================
+-- 3. Clientes
+-- ========================================
+CREATE TABLE clientes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    empresa TEXT,
+    celular TEXT,
+    nicho_id UUID REFERENCES nichos(id) ON DELETE SET NULL,
+    criado_em TIMESTAMP DEFAULT NOW(),
+    auth_id UUID REFERENCES auth.users(id) ON DELETE CASCADE
+);
+
+-- ========================================
+-- 4. Pedidos
+-- ========================================
+CREATE TABLE pedidos (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    cliente_id UUID REFERENCES clientes(id) ON DELETE CASCADE,
+    status TEXT DEFAULT 'pendente', -- pendente, em andamento, concluído
+    criado_em TIMESTAMP DEFAULT NOW()
+);
+
+-- ========================================
+-- 5. Pedido_Produtos (para múltiplos produtos por pedido)
+-- ========================================
+CREATE TABLE pedido_produtos (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pedido_id UUID REFERENCES pedidos(id) ON DELETE CASCADE,
+    servico_id UUID REFERENCES servicos(id),
+    quantidade INT DEFAULT 1
+);
+
+-- ========================================
+-- 6. Habilitar RLS (opcional, se usar auth)
+-- ========================================
+ALTER TABLE clientes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pedidos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pedido_produtos ENABLE ROW LEVEL SECURITY;
+INSERT INTO nichos (nome) VALUES
+('Marketing Digital'),
+('Design Gráfico'),
+('Desenvolvimento Web'),
+('Fotografia'),
+('Consultoria Empresarial');
+-- Clientes: qualquer usuário pode ver os clientes
+create policy "Permitir leitura de clientes"
+on clientes
+for select
+using (true);
+
+-- Pedidos: qualquer usuário pode ver pedidos
+create policy "Permitir leitura de pedidos"
+on pedidos
+for select
+using (true);
+
+-- Pedido_Produtos: qualquer usuário pode ver
+create policy "Permitir leitura de pedido_produtos"
+on pedido_produtos
+for select
+using (true);
+
+create policy "Permitir inserção de pedidos"
+on pedidos
+for insert
+with check (true);
+
+create policy "Permitir inserção de pedido_produtos"
+on pedido_produtos
+for insert
+with check (true);
+-- CLIENTE: só vê os próprios pedidos
+alter table pedidos enable row level security;
+create policy "Cliente vê apenas seus pedidos"
+on pedidos
+for select
+using (auth.uid() = cliente_id);
+
+-- CLIENTE: só pode inserir pedidos vinculados a si mesmo
+create policy "Cliente cria pedidos"
+on pedidos
+for insert
+with check (auth.uid() = cliente_id);
+
+-- ADMIN: se quiser que veja todos, você pode criar política opcional
+-- Substitua o UUID do admin pelo correto
+-- create policy "Admin vê todos os pedidos"
+-- on pedidos for select
+-- using (auth.uid() = 'UUID_DO_ADMIN');
+[10:07, 02/10/2025] Giovana: create policy "Cliente pode se cadastrar"
+on clientes
+for insert
+with check (auth.uid() = auth_id);
+alter table clientes enable row level security;
+
+ ALTER TABLE clientes ENABLE ROW LEVEL SECURITY;
+-- Permitir leitura de clientes (opcional, admin ou público)
+
+
+
+-- Permitir atualização do cliente
+CREATE POLICY "Cliente atualiza dados"
+ON clientes
+FOR UPDATE
+USING (auth.uid() = auth_id)
+WITH CHECK (auth.uid() = auth_id);
+
+ -- Permitir que usuários logados leiam seus próprios dados
+CREATE POLICY "Clientes podem ler seus próprios dados"
+ON clientes
+FOR SELECT
+USING (auth_id = auth.uid());
+
+-- Permitir que usuários logados insiram seus dados
+CREATE POLICY "Clientes podem inserir seu próprio registro"
+ON clientes
+FOR INSERT
+WITH CHECK (auth_id = auth.uid());
+
+-- TABELAS
+CREATE TABLE IF NOT EXISTS nichos (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  nome TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS servicos (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  nome TEXT NOT NULL UNIQUE,
+  preco NUMERIC(10,2) DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS clientes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  nome TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  empresa TEXT,
+  celular TEXT,
+  nicho_id UUID REFERENCES nichos(id) ON DELETE SET NULL,
+  auth_id UUID UNIQUE NOT NULL,
+  criado_em TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS pedidos (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  cliente_id UUID REFERENCES clientes(id) ON DELETE CASCADE,
+  status TEXT DEFAULT 'pendente',
+  criado_em TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS pedido_produtos (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  pedido_id UUID REFERENCES pedidos(id) ON DELETE CASCADE,
+  servico_id UUID REFERENCES servicos(id),
+  quantidade INT DEFAULT 1
+);
+
+-- DADOS INICIAIS
+INSERT INTO nichos (nome) VALUES
+  ('Marketing Digital'),
+  ('Design Gráfico'),
+  ('Desenvolvimento Web'),
+  ('Fotografia'),
+  ('Consultoria Empresarial')
+ON CONFLICT DO NOTHING;
+
+-- ATIVAR SEGURANÇA (RLS)
+ALTER TABLE clientes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pedidos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pedido_produtos ENABLE ROW LEVEL SECURITY;
+
+-- POLÍTICAS: CLIENTES
+CREATE POLICY "Cliente pode ver seus dados"
+ON clientes FOR SELECT
+USING (auth_id = auth.uid());
+
+
+
+CREATE POLICY "Cliente atualiza seus dados"
+ON clientes FOR UPDATE
+USING (auth_id = auth.uid())
+WITH CHECK (auth_id = auth.uid());
+
+-- POLÍTICAS: PEDIDOS
+CREATE POLICY "Cliente vê seus pedidos"
+ON pedidos FOR SELECT
+USING (
+  cliente_id = (SELECT id FROM clientes WHERE auth_id = auth.uid())
+);
+
+
+-- POLÍTICAS: PEDIDO_PRODUTOS
+CREATE POLICY "Cliente vê pedido_produtos"
+ON pedido_produtos FOR SELECT
+USING (
+  pedido_id IN (
+    SELECT p.id
+    FROM pedidos p
+    JOIN clientes c ON p.cliente_id = c.id
+    WHERE c.auth_id = auth.uid()
+  )
+);
+
+CREATE POLICY "Cliente insere pedido_produtos"
+ON pedido_produtos FOR INSERT
+WITH CHECK (
+  pedido_id IN (
+    SELECT p.id
+    FROM pedidos p
+    JOIN clientes c ON p.cliente_id = c.id
+    WHERE c.auth_id = auth.uid()
+  )
+);
+-- Para que o cliente possa inserir seu próprio registro
+create policy "Clientes podem se cadastrar"
+on clientes
+for insert
+with check (auth.uid() = auth_id);
+
+CREATE TABLE IF NOT EXISTS clientes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  nome TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  empresa TEXT,
+  celular TEXT,
+  nicho_id UUID REFERENCES nichos(id) ON DELETE SET NULL,
+  auth_id UUID UNIQUE NOT NULL,
+  criado_em TIMESTAMP DEFAULT now()
+);
+CREATE POLICY "Permitir inserção sem auth"
+ON clientes
+FOR INSERT
+WITH CHECK (true);
+
+
+-- Políticas para ADMIN poder gerenciar tudo
+CREATE POLICY "Admin pode gerenciar todos os pedidos" ON pedidos
+FOR ALL USING (true);
+
+CREATE POLICY "Admin pode gerenciar todos os clientes" ON clientes  
+FOR ALL USING (true);
+
+CREATE POLICY "Admin pode gerenciar pedido_produtos" ON pedido_produtos
+FOR ALL USING (true);
+
+-- Manter as políticas existentes para clientes
+CREATE POLICY "Clientes podem ver seus próprios pedidos" ON pedidos
+FOR SELECT USING (
+  cliente_id IN (SELECT id FROM clientes WHERE auth_id = auth.uid())
+);
+
+CREATE POLICY "Clientes podem inserir seus próprios pedidos" ON pedidos  
+FOR INSERT WITH CHECK (
+  cliente_id IN (SELECT id FROM clientes WHERE auth_id = auth.uid())
+);
+
+-- Criar tabela de notificações
+CREATE TABLE notificacoes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  cliente_id UUID REFERENCES clientes(id) ON DELETE CASCADE,
+  pedido_id UUID REFERENCES pedidos(id) ON DELETE CASCADE,
+  tipo TEXT NOT NULL,
+  mensagem TEXT NOT NULL,
+  lida BOOLEAN DEFAULT FALSE,
+  criado_em TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Habilitar RLS na tabela
+ALTER TABLE notificacoes ENABLE ROW LEVEL SECURITY;
+
+-- Políticas para notificações
+CREATE POLICY "Admin pode gerenciar notificacoes" ON notificacoes
+FOR ALL USING (true);
+
+CREATE POLICY "Clientes veem suas notificacoes" ON notificacoes  
+FOR SELECT USING (cliente_id IN (SELECT id FROM clientes WHERE auth_id = auth.uid()));
+
+-- Para garantir que o admin tenha acesso total
+CREATE POLICY "Admin acesso total pedidos" ON pedidos
+FOR ALL USING (true);
+
+CREATE POLICY "Admin acesso total clientes" ON clientes  
+FOR ALL USING (true);
+
+CREATE POLICY "Admin acesso total pedido_produtos" ON pedido_produtos
+FOR ALL USING (true);
+
+-- Tabela para agendamentos de reunião
+CREATE TABLE agendamentos_reuniao (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome TEXT NOT NULL,
+    email TEXT NOT NULL,
+    assunto TEXT NOT NULL,
+    data DATE NOT NULL,
+    horario TIME NOT NULL,
+    mensagem TEXT,
+    cliente_id UUID REFERENCES clientes(id) ON DELETE SET NULL,
+    status TEXT DEFAULT 'pendente',
+    criado_em TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Habilitar RLS
+ALTER TABLE agendamentos_reuniao ENABLE ROW LEVEL SECURITY;
+
+-- Políticas para agendamentos
+CREATE POLICY "Admin pode gerenciar agendamentos" ON agendamentos_reuniao
+FOR ALL USING (true);
+
+CREATE POLICY "Clientes veem seus agendamentos" ON agendamentos_reuniao  
+FOR SELECT USING (cliente_id IN (SELECT id FROM clientes WHERE auth_id = auth.uid()));
+
+CREATE POLICY "Permitir inserção de agendamentos" ON agendamentos_reuniao
+FOR INSERT WITH CHECK (true);
+
+CREATE TABLE IF NOT EXISTS agendamentos_reuniao (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nome TEXT NOT NULL,
+    email TEXT NOT NULL,
+    assunto TEXT NOT NULL,
+    data DATE NOT NULL,
+    horario TIME NOT NULL,
+    mensagem TEXT,
+    status TEXT DEFAULT 'pendente',
+    criado_em TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Permitir inserções
+DROP POLICY IF EXISTS "Permitir inserção de agendamentos" ON agendamentos_reuniao;
+CREATE POLICY "Permitir inserção de agendamentos" ON agendamentos_reuniao
+FOR INSERT WITH CHECK (true);
+
+-- Permitir leitura
+CREATE POLICY "Permitir leitura de agendamentos" ON agendamentos_reuniao
+FOR SELECT USING (true);
+

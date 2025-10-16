@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro - Humanize</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Nova versão do Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-[#FFF6EE] relative">
+  <!-- Background -->
+ 
+
+  <!-- Ícones decorativos -->
+  <div class="absolute inset-0 flex items-center justify-center -z-10">
+    <img src="img/Pattern_Humanize-2.png" alt="decoração" class="max-w-[700px] opacity-90">
+  </div>
+
+  <!-- Card de cadastro -->
+  <div class="relative bg-[#FFF6EE] rounded-2xl shadow-xl px-6 py-4 sm:px-8 sm:py-6 w-full max-w-sm sm:max-w-md">
+    <h2 class="text-xl sm:text-2xl font-extrabold text-center text-[#FF5459] mb-3 sm:mb-4">
+      Cadastro
+    </h2>
+
+    <form id="cadastroForm" class="space-y-2 sm:space-y-3">
+      <div>
+        <label class="block text-xs sm:text-sm font-medium text-gray-700">Nome:</label>
+        <input type="text" id="nome" placeholder="Ex: João Silva" required
+          class="w-full px-3 py-2 border-2 border-red-300 rounded-md bg-[#ffefd8] text-gray-800 text-sm sm:text-base placeholder-gray-500 focus:border-[#ff5459] focus:bg-[#fffaf5] outline-none transition" />
+      </div>
+
+      <div>
+        <label class="block text-xs sm:text-sm font-medium text-gray-700">Email:</label>
+        <input type="email" id="email" placeholder="Ex: agenciahumanize@gmail.com" required
+          class="w-full px-3 py-2 border-2 border-red-300 rounded-md bg-[#ffefd8] text-gray-800 text-sm sm:text-base placeholder-gray-500 focus:border-[#ff5459] focus:bg-[#fffaf5] outline-none transition" />
+      </div>
+
+      <div>
+        <label class="block text-xs sm:text-sm font-medium text-gray-700">Senha (Mínimo 6 dígitos):</label>
+        <input type="password" id="senha" placeholder="*****" minlength="6" required
+          class="w-full px-3 py-2 border-2 border-red-300 rounded-md bg-[#ffefd8] text-gray-800 text-sm sm:text-base placeholder-gray-500 focus:border-[#ff5459] focus:bg-[#fffaf5] outline-none transition" />
+      </div>
+
+      <div>
+        <label class="block text-xs sm:text-sm font-medium text-gray-700">Confirmar senha:</label>
+        <input type="password" id="confirmarSenha" placeholder="*****" minlength="6" required
+          class="w-full px-3 py-2 border-2 border-red-300 rounded-md bg-[#ffefd8] text-gray-800 text-sm sm:text-base placeholder-gray-500 focus:border-[#ff5459] focus:bg-[#fffaf5] outline-none transition" />
+      </div>
+
+      <div>
+        <label class="block text-xs sm:text-sm font-medium text-gray-700">Telefone:</label>
+        <input type="tel" id="telefone" placeholder="Ex: (00) 0000-0000"
+          class="w-full px-3 py-2 border-2 border-red-300 rounded-md bg-[#ffefd8] text-gray-800 text-sm sm:text-base placeholder-gray-500 focus:border-[#ff5459] focus:bg-[#fffaf5] outline-none transition" />
+      </div>
+
+      <div>
+        <label class="block text-xs sm:text-sm font-medium text-gray-700">Nome da Empresa:</label>
+        <input type="text" id="empresa" placeholder="Ex: Agência Humanize"
+          class="w-full px-3 py-2 border-2 border-red-300 rounded-md bg-[#ffefd8] text-gray-800 text-sm sm:text-base placeholder-gray-500 focus:border-[#ff5459] focus:bg-[#fffaf5] outline-none transition" />
+      </div>
+
+      <div>
+        <label class="block text-xs sm:text-sm font-medium text-gray-700">Nicho:</label>
+        <select id="nicho" required
+          class="w-full px-3 py-2 border-2 border-red-300 rounded-md bg-[#ffefd8] text-gray-800 text-sm sm:text-base placeholder-gray-500 focus:border-[#ff5459] focus:bg-[#fffaf5] outline-none transition">
+          <option value="" disabled selected>Carregando nichos...</option>
+        </select>
+      </div>
+
+      <div class="flex items-center justify-between pt-3">
+        <img src="img/Reduzido vertical_Humanize-6.png" alt="Humanize logo" class="h-12 sm:h-16 object-contain">
+        <button type="submit" id="submitBtn"
+          class="w-32 sm:w-40 py-2 sm:py-3 rounded-md font-semibold text-white shadow-md bg-gradient-to-r from-[#FF5459] to-[#FF9C19] hover:opacity-90 transition text-sm sm:text-base">
+          Cadastrar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Configuração do Supabase
+    const SUPABASE_URL = 'https://aoyycbedxetmnavmhesf.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFveXljYmVkeGV0bW5hdm1oZXNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMDM2NDEsImV4cCI6MjA3MjU3OTY0MX0.M8m4i7xvYRBEBVwIZaEfQjoMU_ND2qi1GYx9zGK9wqA';
+    
+    // Inicializar Supabase
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const cadastroForm = document.getElementById('cadastroForm');
+      const nichoSelect = document.getElementById('nicho');
+      const submitBtn = document.getElementById('submitBtn');
+
+      console.log('Página carregada, iniciando...');
+
+      // Carregar nichos - com fallback automático
+      carregarNichos();
+
+      async function carregarNichos() {
+        try {
+          console.log('Tentando carregar nichos do Supabase...');
+          
+          const { data: nichos, error } = await supabaseClient
+            .from('nichos')
+            .select('id, nome')
+            .order('nome');
+
+          if (error) {
+            console.error('Erro ao carregar nichos:', error);
+            throw error;
+          }
+
+          console.log('Nichos carregados:', nichos);
+
+          if (nichos && nichos.length > 0) {
+            nichoSelect.innerHTML = '<option value="" disabled selected>Selecione seu nicho...</option>';
+            nichos.forEach(nicho => {
+              const option = document.createElement('option');
+              option.value = nicho.id;
+              option.textContent = nicho.nome;
+              nichoSelect.appendChild(option);
+            });
+          } else {
+            throw new Error('Nenhum nicho encontrado');
+          }
+
+        } catch (error) {
+          console.error('Falha ao carregar nichos, usando fallback:', error);
+          usarNichosFallback();
+        }
+      }
+
+      function usarNichosFallback() {
+        const nichosFixos = [
+          { id: '1', nome: 'Marketing Digital' },
+          { id: '2', nome: 'Design Gráfico' },
+          { id: '3', nome: 'Desenvolvimento Web' },
+          { id: '4', nome: 'Fotografia' },
+          { id: '5', nome: 'Consultoria Empresarial' }
+        ];
+        
+        nichoSelect.innerHTML = '<option value="" disabled selected>Selecione seu nicho...</option>';
+        nichosFixos.forEach(nicho => {
+          const option = document.createElement('option');
+          option.value = nicho.id;
+          option.textContent = nicho.nome;
+          nichoSelect.appendChild(option);
+        });
+        console.log('Nichos carregados via fallback');
+      }
+
+      // Submit do formulário
+      cadastroForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Desabilitar botão
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Cadastrando...';
+        submitBtn.classList.add('opacity-50');
+
+        const dados = {
+          nome: document.getElementById('nome').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          senha: document.getElementById('senha').value,
+          confirmarSenha: document.getElementById('confirmarSenha').value,
+          telefone: document.getElementById('telefone').value.trim(),
+          empresa: document.getElementById('empresa').value.trim(),
+          nicho: document.getElementById('nicho').value
+        };
+
+        // Validações
+        if (dados.senha !== dados.confirmarSenha) {
+          alert('Senhas não coincidem!');
+          resetarBotao();
+          return;
+        }
+
+        if (dados.senha.length < 6) {
+          alert('A senha deve ter no mínimo 6 caracteres!');
+          resetarBotao();
+          return;
+        }
+
+        if (!dados.nicho) {
+          alert('Por favor, selecione um nicho!');
+          resetarBotao();
+          return;
+        }
+
+        try {
+          console.log('Iniciando cadastro...');
+
+          // 1. Cadastrar no Auth
+          const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+            email: dados.email,
+            password: dados.senha
+          });
+
+          if (authError) {
+            console.error('Erro no Auth:', authError);
+            alert('Erro no cadastro: ' + authError.message);
+            resetarBotao();
+            return;
+          }
+
+          console.log('Usuário criado no Auth:', authData.user.id);
+
+          // 2. Inserir na tabela clientes
+          const { error: insertError } = await supabaseClient
+            .from('clientes')
+            .insert({
+              nome: dados.nome,
+              email: dados.email,
+              celular: dados.telefone,
+              empresa: dados.empresa,
+              nicho_id: dados.nicho,
+              auth_id: authData.user.id
+            });
+
+          if (insertError) {
+            console.error('Erro ao inserir cliente:', insertError);
+            alert('Erro ao salvar dados: ' + insertError.message);
+            resetarBotao();
+            return;
+          }
+
+          console.log('Cadastro completo com sucesso!');
+          alert('Cadastro realizado com sucesso! Verifique seu email.');
+          window.location.href = "./login.html";
+
+        } catch (error) {
+          console.error('Erro inesperado:', error);
+          alert('Erro: ' + error.message);
+          resetarBotao();
+        }
+      });
+
+      function resetarBotao() {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Cadastrar';
+        submitBtn.classList.remove('opacity-50');
+      }
+    });
+  </script>
+</body>
+</html>
