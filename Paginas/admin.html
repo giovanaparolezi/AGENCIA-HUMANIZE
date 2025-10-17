@@ -40,7 +40,7 @@
 <aside class="w-full md:w-72 bg-[#FF5A5F] text-white flex flex-col justify-between p-4 md:p-6">
   <div>
     <div class="mb-4 md:mb-6 flex justify-between items-center">
-      <img src="img/Logo completo_Humanize-3.png" alt="Logo" class="max-w-[120px] md:max-w-[150px]">
+      <img src="Paginas/img/Logo completo_Humanize-3.png" alt="Logo" class="max-w-[120px] md:max-w-[150px]">
       <!-- Botão de toggle para mobile -->
       <button id="sidebarToggle" class="md:hidden text-white">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,7 +50,7 @@
     </div>
     <nav id="sidebarNav" class="flex flex-col gap-2 md:gap-4">
       <a href="#" class="hover:bg-white/20 px-4 py-2 rounded">Dashboard</a>
-      <a href="index2.html" class="hover:bg-white/20 px-4 py-2 rounded">Início</a>
+      <a href="/HUMANIZE - PROJETO FINAL/index.html" class="hover:bg-white/20 px-4 py-2 rounded">Início</a>
       <button id="logoutBtn" class="hover:bg-white/20 px-4 py-2 rounded text-left">Sair</button>
     </nav>
   </div>
@@ -259,7 +259,7 @@ carregarClientes();
 // Logout
 logoutBtn.addEventListener('click', function() {
   localStorage.removeItem('usuarioLogado');
-  window.location.href = 'index2.html';
+  window.location.href = '/HUMANIZE - PROJETO FINAL/index.html';
 });
 // Função para salvar alterações do status
 async function salvarAlteracoesStatus(pedidoId, novoStatus) {
