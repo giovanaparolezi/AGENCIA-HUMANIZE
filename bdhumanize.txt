@@ -352,3 +352,92 @@ FOR INSERT WITH CHECK (true);
 CREATE POLICY "Permitir leitura de agendamentos" ON agendamentos_reuniao
 FOR SELECT USING (true);
 
+CREATE TABLE password_reset_tokens (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  cliente_id UUID REFERENCES clientes(id) ON DELETE CASCADE,
+  token TEXT NOT NULL UNIQUE,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Criar índice para melhor performance
+CREATE INDEX idx_password_reset_tokens_token ON password_reset_tokens(token);
+CREATE INDEX idx_password_reset_tokens_expires_at ON password_reset_tokens(expires_at);
+
+-- Verificar se a tabela existe
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  cliente_id UUID NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
+  token TEXT NOT NULL UNIQUE,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  used BOOLEAN DEFAULT FALSE
+);
+
+-- Criar índices
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON password_reset_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_expires_at ON password_reset_tokens(expires_at);
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_cliente_id ON password_reset_tokens(cliente_id);
+
+-- Criar a tabela de tokens se não existir
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  cliente_id UUID NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
+  token TEXT NOT NULL UNIQUE,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  used BOOLEAN DEFAULT FALSE
+);
+
+-- Criar índices
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON password_reset_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_expires_at ON password_reset_tokens(expires_at);
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_cliente_id ON password_reset_tokens(cliente_id);
+
+
+-- Verificar e criar tabela de tokens
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  cliente_id UUID NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
+  token TEXT NOT NULL UNIQUE,
+  expires_at TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  used BOOLEAN DEFAULT FALSE
+);
+
+-- Criar índices para performance
+CREATE INDEX IF NOT EXISTS idx_tokens_token ON password_reset_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_tokens_expires ON password_reset_tokens(expires_at);
+CREATE INDEX IF NOT EXISTS idx_tokens_cliente ON password_reset_tokens(cliente_id);
+
+-- Configurar políticas RLS (se necessário)
+ALTER TABLE password_reset_tokens ENABLE ROW LEVEL SECURITY;
+
+-- Política para permitir inserção e leitura sem autenticação
+DROP POLICY IF EXISTS "Permitir tudo para password_reset_tokens" ON password_reset_tokens;
+CREATE POLICY "Permitir tudo para password_reset_tokens" ON password_reset_tokens
+FOR ALL USING (true);
+
+-- Criar tabela de tokens de recuperação
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  cliente_id UUID REFERENCES clientes(id) ON DELETE CASCADE,
+  token TEXT UNIQUE NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  used BOOLEAN DEFAULT FALSE
+);
+
+-- Criar índices para melhor performance
+CREATE INDEX IF NOT EXISTS idx_tokens_token ON password_reset_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_tokens_expires ON password_reset_tokens(expires_at);
+CREATE INDEX IF NOT EXISTS idx_tokens_cliente ON password_reset_tokens(cliente_id);
+
+-- Configurar políticas (se usar RLS)
+ALTER TABLE password_reset_tokens ENABLE ROW LEVEL SECURITY;
+
+-- Política para permitir acesso sem autenticação
+DROP POLICY IF EXISTS "allow_all_password_reset" ON password_reset_tokens;
+CREATE POLICY "allow_all_password_reset" ON password_reset_tokens
+FOR ALL USING (true);
+ALTER TABLE clientes ADD COLUMN senha TEXT;

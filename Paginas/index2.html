@@ -21,6 +21,379 @@
       padding: 0;
       overflow-x: hidden;
       width: 100%;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* MODAL CORRIGIDO - GARANTINDO QUE FIQUE SEMPRE ACIMA */
+    #modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 999999 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    #modal:not(.hidden) {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    #modal:not(.hidden) .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-body {
+      max-height: 70vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+
+    /* Garantir que nada fique acima do modal */
+    body.modal-open {
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    body.modal-open * {
+      z-index: auto !important;
+    }
+
+    /* Restante do CSS permanece igual... */
+
+    /* From Uiverse.io by nihad-abbasov */
+    .ui-switch {
+      --switch-bg: rgb(135, 150, 165);
+      --switch-width: 48px;
+      --switch-height: 20px;
+      --circle-diameter: 32px;
+      --circle-bg: rgb(232, 89, 15);
+      --circle-inset: calc((var(--circle-diameter) - var(--switch-height)) / 2);
+    }
+
+    .ui-switch input {
+      display: none;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: var(--switch-width);
+      height: var(--switch-height);
+      background: var(--switch-bg);
+      border-radius: 999px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .slider .circle {
+      top: calc(var(--circle-inset) * -1);
+      left: 0;
+      width: var(--circle-diameter);
+      height: var(--circle-diameter);
+      position: absolute;
+      background: var(--circle-bg);
+      border-radius: inherit;
+      background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjAiIHdpZHRoPSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj4KICAgIDxwYXRoIGZpbGw9IiNmZmYiCiAgICAgICAgZD0iTTkuMzA1IDEuNjY3VjMuNzVoMS4zODlWMS42NjdoLTEuMzl6bS00LjcwNyAxLjk1bC0uOTgyLjk4Mkw1LjA5IDYuMDcybC45ODItLjk4Mi0xLjQ3My0xLjQ3M3ptMTAuODAyIDBMMTMuOTI3IDUuMDlsLjk4Mi45ODIgMS40NzMtMS40NzMtLjk4Mi0uOTgyek0xMCA1LjEzOWE0Ljg3MiA0Ljg3MiAwIDAwLTQuODYyIDQuODZBNC44NzIgNC44NzIgMCAwMDEwIDE0Ljg2MiA0Ljg3MiA0Ljg3MiAwIDAwMTQuODYgMTAgNC44NzIgNC44NzIgMCAwMDEwIDUuMTM5em0wIDEuMzg5QTMuNDYyIDMuNDYyIDAgMDExMy40NzEgMTBhMy40NjIgMy40NjIgMCAwMS0zLjQ3MyAzLjQ3MkEzLjQ2MiAzLjQ2MiAwIDAxNi41MjcgMTAgMy40NjIgMy40NjIgMCAwMTEwIDYuNTI4ek0xLjY2NSA5LjMwNXYxLjM5aDIuMDgzdi0xLjM5SDEuNjY2em0xNC41ODMgMHYxLjM5aDIuMDg0di0xLjM5aC0yLjA4NHpNNS4wOSAxMy45MjhMMy42MTYgMTUuNGwuOTgyLjk4MiAxLjQ3My0xLjQ3My0uOTgyLS45ODJ6bTkuODIwMGwtLjk4Mi45ODIgMS40NzMgMS40NzMuOTgyLS45ODItMS40NzMtMS40NzN6TTkuMzA1IDE2LjI1djIuMDgzaDEuMzg5VjE2LjI1aC0xLjM5eiIgLz4KPC9zdmc+");
+      background-repeat: no-repeat;
+      background-position: center center;
+      -webkit-transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -webkit-transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+      -o-transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+      transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, -webkit-transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+    }
+
+    .slider .circle::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: inherit;
+      -webkit-transition: all 500ms;
+      -o-transition: all 500ms;
+      transition: all 500ms;
+      opacity: 0;
+    }
+
+    .ui-switch input:checked+.slider .circle {
+      left: calc(100% - var(--circle-diameter));
+      background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjAiIHdpZHRoPSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj4KICAgIDxwYXRoIGZpbGw9IiNmZmYiCiAgICAgICAgZD0iTTQuMiAyLjVsLS43IDEuOC0xLjguNyAxLjguNy43IDEuOC42LTEuOEw2LjcgNWwtMS45LS43LS42LTEuOHptMTUgOC4zYTYuNyA2LjcgMCAxMS02LjYtNi42IDUuOCA1LjggMCAwMDYuNiA2LjZ6IiAvPgo8L3N2Zz4=");
+      background-color: rgb(0, 56, 146);
+    }
+
+    .ui-switch input:active+.slider .circle::before {
+      -webkit-transition: 0s;
+      -o-transition: 0s;
+      transition: 0s;
+      opacity: 1;
+      width: 0;
+      height: 0;
+    }
+
+    /* From Uiverse.io by SchawnnahJ */
+    .loader {
+     position: relative;
+     width: 2.5em;
+     height: 2.5em;
+     transform: rotate(165deg);
+    }
+
+    .loader:before, .loader:after {
+     content: "";
+     position: absolute;
+     top: 50%;
+     left: 50%;
+     display: block;
+     width: 0.5em;
+     height: 0.5em;
+     border-radius: 0.25em;
+     transform: translate(-50%, -50%);
+    }
+
+    .loader:before {
+     animation: before8 2s infinite;
+    }
+
+    .loader:after {
+     animation: after6 2s infinite;
+    }
+
+    @keyframes before8 {
+     0% {
+      width: 0.5em;
+      box-shadow: 1em -0.5em rgba(225, 20, 98, 0.75), -1em 0.5em rgba(111, 202, 220, 0.75);
+     }
+
+     35% {
+      width: 2.5em;
+      box-shadow: 0 -0.5em rgba(225, 20, 98, 0.75), 0 0.5em rgba(111, 202, 220, 0.75);
+     }
+
+     70% {
+      width: 0.5em;
+      box-shadow: -1em -0.5em rgba(225, 20, 98, 0.75), 1em 0.5em rgba(111, 202, 220, 0.75);
+     }
+
+     100% {
+      box-shadow: 1em -0.5em rgba(225, 20, 98, 0.75), -1em 0.5em rgba(111, 202, 220, 0.75);
+     }
+    }
+
+    @keyframes after6 {
+     0% {
+      height: 0.5em;
+      box-shadow: 0.5em 1em rgba(61, 184, 143, 0.75), -0.5em -1em rgba(233, 169, 32, 0.75);
+     }
+
+     35% {
+      height: 2.5em;
+      box-shadow: 0.5em 0 rgba(61, 184, 143, 0.75), -0.5em 0 rgba(233, 169, 32, 0.75);
+     }
+
+     70% {
+      height: 0.5em;
+      box-shadow: 0.5em -1em rgba(61, 184, 143, 0.75), -0.5em 1em rgba(233, 169, 32, 0.75);
+     }
+
+     100% {
+      box-shadow: 0.5em 1em rgba(61, 184, 143, 0.75), -0.5em -1em rgba(233, 169, 32, 0.75);
+     }
+    }
+
+    .loader {
+     position: absolute;
+     top: calc(50% - 1.25em);
+     left: calc(50% - 1.25em);
+    }
+
+    /* From Uiverse.io by Creatlydev */
+    .floating-button {
+      cursor: pointer;
+      border: none;
+      background: #FF5459;
+      color: #fff;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      display: grid;
+      place-content: center;
+      transition:
+        background 300ms,
+        transform 200ms;
+      font-weight: 600;
+      z-index: 1000;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .button__text {
+      position: absolute;
+      inset: 0;
+      animation: text-rotation 8s linear infinite;
+    }
+
+    .button__text > span {
+      position: absolute;
+      transform: rotate(calc(19deg * var(--index)));
+      inset: 7px;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .button__circle {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      overflow: hidden;
+      background: #fff;
+      color: #FF5459;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .button__icon--copy {
+      position: absolute;
+      transform: translate(-150%, 150%);
+    }
+
+    .floating-button:hover {
+      background: #d8353b;
+      transform: scale(1.05);
+    }
+
+    .floating-button:hover .button__icon {
+      color: #d8353b;
+    }
+
+    .floating-button:hover .button__icon:first-child {
+      transition: transform 0.3s ease-in-out;
+      transform: translate(150%, -150%);
+    }
+
+    .floating-button:hover .button__icon--copy {
+      transition: transform 0.3s ease-in-out 0.1s;
+      transform: translate(0);
+    }
+
+    @keyframes text-rotation {
+      to {
+        rotate: 360deg;
+      }
+    }
+
+    /* ANIMAÇÕES GERAIS */
+    .fade-in {
+      animation: fadeIn 1s ease-in;
+    }
+
+    .slide-in-left {
+      animation: slideInLeft 0.8s ease-out;
+    }
+
+    .slide-in-right {
+      animation: slideInRight 0.8s ease-out;
+    }
+
+    .bounce-in {
+      animation: bounceIn 1s ease-out;
+    }
+
+    .pulse-gentle {
+      animation: pulseGentle 2s infinite;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideInLeft {
+      from { transform: translateX(-50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes pulseGentle {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Typing effect */
+    .typed-cursor {
+      opacity: 1;
+      animation: typedjsBlink 0.7s infinite;
+    }
+
+    @keyframes typedjsBlink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    /* LOADER OVERLAY */
+    #loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
     }
 
     /* MOBILE - LARGURA TOTAL */
@@ -74,6 +447,39 @@
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
       }
+
+      .floating-button {
+        width: 80px;
+        height: 80px;
+        bottom: 20px;
+        right: 20px;
+      }
+
+      .button__text > span {
+        font-size: 12px;
+      }
+
+      /* Ajustes do modal para mobile */
+      .modal-content {
+        max-width: 95vw !important;
+        max-height: 90vh !important;
+      }
+      
+      .modal-body {
+        max-height: calc(90vh - 80px);
+      }
+      
+      .modal-layout {
+        flex-direction: column !important;
+        gap: 1rem !important;
+      }
+      
+      .video-column {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        max-width: 300px !important;
+        margin: 0 auto !important;
+      }
     }
 
     /* DESKTOP - CORREÇÃO DO LAYOUT */
@@ -115,15 +521,18 @@
         padding-left: 2rem !important;
         padding-right: 2rem !important;
       }
+
+      
     }
 
     /* FOOTER - CORREÇÃO DA LARGURA */
-    footer {
+footer {
       width: 100% !important;
       max-width: 100% !important;
       margin: 0 !important;
-      padding: 0 !important;
+      padding-top: 20px ;
     }
+
 
     footer .max-w-7xl {
       max-width: 100% !important;
@@ -232,144 +641,10 @@
       flex-shrink: 0 !important;
     }
 
-    /* MODAL CORRIGIDO */
-    #modal {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-      z-index: 99999 !important;
-      background: rgba(0,0,0,0.8) !important;
-      display: none !important;
-      align-items: center !important;
-      justify-content: center !important;
-      padding: 1rem !important;
-    }
-
-    .modal-content {
-      max-width: 90vw !important;
-      max-height: 85vh !important;
-      width: auto !important;
-      margin: 0 !important;
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .modal-body {
-      padding: 1rem 1.5rem;
-      overflow-y: auto;
-      max-height: calc(85vh - 80px);
-    }
-
     #modalContent {
       overflow-y: auto;
       scroll-behavior: smooth;
       padding-right: 10px;
-    }
-
-    @media (max-width: 768px) {
-      .modal-content {
-        max-width: 95vw !important;
-        max-height: 90vh !important;
-      }
-      
-      .modal-body {
-        max-height: calc(90vh - 80px);
-      }
-      
-      .modal-layout {
-        flex-direction: column !important;
-        gap: 1rem !important;
-      }
-      
-      .video-column {
-        flex: 0 0 auto !important;
-        width: 100% !important;
-        max-width: 300px !important;
-        margin: 0 auto !important;
-      }
-    }
-
-    /* ESTILOS PERSONALIZADOS */
-    .video-container {
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .video-controls {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-      padding: 20px;
-      transform: translateY(100%);
-      transition: transform 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .video-container:hover .video-controls {
-      transform: translateY(0);
-    }
-    
-    .video-btn {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: white;
-      transition: all 0.3s ease;
-    }
-    
-    .video-btn:hover {
-      background: rgba(255, 255, 255, 0.4);
-      transform: scale(1.1);
-    }
-    
-    .volume-slider {
-      width: 80px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 2px;
-      outline: none;
-      -webkit-appearance: none;
-    }
-    
-    .volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: white;
-      cursor: pointer;
-    }
-    
-    .sound-indicator {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    
-    .video-container:hover .sound-indicator {
-      opacity: 1;
     }
 
     #modal.hidden {
@@ -833,7 +1108,7 @@
     }
     
     .desktop-sidebar{
-      z-index: 10000000000000000 !important;
+      z-index: 1000 !important;
     }
 
     .video-container {
@@ -1020,13 +1295,20 @@
 </head>
 
 <body class="bg-[#FEF6EB]">
+  <!-- Loader -->
+  <div id="loader-overlay">
+    <div class="loader"></div>
+  </div>
+
   <!-- Header Mobile -->
-  <header class="md:hidden flex justify-between items-center bg-[#FF5A5F] px-6 py-3">
+  <header class="md:hidden flex justify-between items-center bg-[#FF5A5F] px-6 py-3 relative">
     <button id="menu-btn">
       <img id="heart-icon" src="img/Ícone coração_Humanize-11 1.png" alt="Coração"
         class="w-8 h-8 transition-transform duration-300">
     </button>
     <img src="img/Logo completo_Humanize-3.png" alt="Logo Humanize" class="h-8">
+    
+    
   </header>
 
   <!-- Sidebar Mobile -->
@@ -1039,7 +1321,7 @@
       </div>
       <nav class="flex-1 font-authorB">
         <ul class="space-y-3 px-4">
-          <li><a href="#" class="flex items-center gap-3 text-white py-2 hover:bg-white/20 rounded-lg"><img
+          <li><a href="#humanize" class="flex items-center gap-3 text-white py-2 hover:bg-white/20 rounded-lg"><img
                 src="img/home 1.png" class="w-6">Início</a></li>
           <li><a href="#sobre" class="flex items-center gap-3 text-white py-2 hover:bg-white/20 rounded-lg"><img
                 src="img/Ícone brilho_Humanize-23 1.png" class="w-6">Sobre nós</a></li>
@@ -1072,7 +1354,7 @@
     </div>
     <nav class="flex-1 font-authorB">
       <ul class="space-y-3 px-4">
-        <li><a href="#" class="flex items-center gap-3 text-white py-2 hover:bg-white/20 rounded-lg sidebar-item"><img
+        <li><a href="#humanize" class="flex items-center gap-3 text-white py-2 hover:bg-white/20 rounded-lg sidebar-item"><img
               src="img/home 1.png" class="w-6"><span class="sidebar-text">Início</span></a></li>
         <li><a href="#sobre"
             class="flex items-center gap-3 text-white py-2 hover:bg-white/20 rounded-lg sidebar-item"><img
@@ -1098,6 +1380,8 @@
       </ul>
     </nav>
     <div class="px-4">
+    
+      
       <a href="cliente.html"
         class="sidebar-button flex items-center justify-center gap-2 bg-[#FFA500] text-white font-authorB py-3 rounded-tl-2xl rounded-br-2xl hover:bg-[#e69500] transition">
         <img src="img/Ícone perfil_Humanize-39 1.png" class="w-5"> <span class="sidebar-button-text">Área do
@@ -1117,17 +1401,17 @@
           <source src="img/video.mp4" type="video/mp4">
           Seu navegador não suporta vídeos HTML5.
         </video>
-        <div class="humanize">
-          <h2 class="text-white font-authorB leading-snug text-xl md:text-3xl mb-6">
+        <div id="humanize" class= "humanize ">
+          <h2 class="text-white font-authorB  text-xl md:text-3xl mb-6">
             <span class="text-[#FF9C19]">Humanizamos</span> marcas,<br>
             <span class="text-[#FF5459]">Potencializamos</span> conexões.
           </h2>
           <div class="flex w-full bg-white rounded-2xl p-2 gap-2">
             <a href="#orçamento"
-              class="flex-1 text-center bg-[#FF5A5F] text-white py-2 rounded-xl font-authorB hover:bg-[#e14b4f] transition">Solicite
+              class="flex-1 text-center bg-[#FF5A5F] text-white py-2 rounded-xl font-authorB hover:bg-[#e14b4f] ">Solicite
               um orçamento</a>
             <a href="#reunião"
-              class="flex-1 text-center bg-[#FFA500] text-white py-2 rounded-xl font-authorB hover:bg-[#e69500] transition">Vamos
+              class="flex-1 text-center bg-[#FFA500] text-white py-2 rounded-xl font-authorB hover:bg-[#e69500] ">Vamos
               conversar?</a>
           </div>
         </div>
@@ -1136,7 +1420,7 @@
 
     <!-- Seção Sobre Nós -->
     <section id="sobre" class="flex flex-col md:flex-row w-full min-h-screen">
-      <div class="relative w-full md:w-1/2 bg-[#FEF6EB] flex flex-col justify-center px-10 py-16">
+      <div class="relative w-full md:w-1/2 bg-[#FEF6EB] flex flex-col justify-center px-10 py-16 slide-in-left">
         <div class="relative z-20 max-w-lg">
           <img src="img/Selo_Humanize-5.png" alt="Ícone coração" class="w-12 mb-4">
           <h1 class="text-3xl md:text-4xl font-medium leading-snug text-[#FF7A00] mb-6">
@@ -1152,7 +1436,7 @@
         </div>
       </div>
       <div
-        class=" rounded-2xl  w-full md:w-1/2 bg-gradient-to-b from-[#FF4C4C] to-[#FF9D42] text-white flex flex-col justify-center px-10 py-16">
+        class=" rounded-2xl  w-full md:w-1/2 bg-gradient-to-b from-[#FF4C4C] to-[#FF9D42] text-white flex flex-col justify-center px-10 py-16 slide-in-right">
         <div class="max-w-lg">
           <p class="mb-6 text-lg">Na <span class="font-bold">Humanize</span>, o marketing é estratégico, <span
               class="font-bold">autêntico</span> e <span class="font-bold">humano</span>.</p>
@@ -1208,7 +1492,7 @@
         </div>
 
         <!-- Card 2 -->
-        <div class="flip-card w-full h-60">
+        <div class="flip-card w-full h-60" style="animation-delay: 0.2s;">
           <div class="flip-inner w-full h-full relative">
             <div
               class="flip-front absolute w-full h-full card-gradient rounded-2xl shadow-lg p-6 text-center flex flex-col items-center justify-center">
@@ -1228,7 +1512,7 @@
         </div>
 
         <!-- Card 3 -->
-        <div class="flip-card w-full h-60">
+        <div class="flip-card w-full h-60" style="animation-delay: 0.4s;">
           <div class="flip-inner w-full h-full relative">
             <div
               class="flip-front absolute w-full h-full card-gradient rounded-2xl shadow-lg p-6 text-center flex flex-col items-center justify-center">
@@ -1247,7 +1531,7 @@
         </div>
 
 <!-- Card 4 -->
-<div class="flip-card w-full h-60">
+<div class="flip-card w-full h-60" style="animation-delay: 0.6s;">
   <div class="flip-inner w-full h-full relative">
     <div
       class="flip-front absolute w-full h-full card-gradient rounded-2xl shadow-lg p-6 text-center flex flex-col items-center justify-center">
@@ -1267,7 +1551,7 @@
 </div>
 
 <!-- Card 5 -->
-<div class="flip-card w-full h-60">
+<div class="flip-card w-full h-60 " style="animation-delay: 0.8s;">
   <div class="flip-inner w-full h-full relative">
     <div
       class="flip-front absolute w-full h-full card-gradient rounded-2xl shadow-lg p-6 text-center flex flex-col items-center justify-center">
@@ -1287,7 +1571,7 @@
 </div>
 
 <!-- Card 6 -->
-<div class="flip-card w-full h-60">
+<div class="flip-card w-full h-60 " style="animation-delay: 1s;">
   <div class="flip-inner w-full h-full relative">
     <div
       class="flip-front absolute w-full h-full card-gradient rounded-2xl shadow-lg p-6 text-center flex flex-col items-center justify-center">
@@ -1313,7 +1597,7 @@
 
       <!-- seção principal -->
       <div class="max-w-7xl mx-auto px-6 py-16">
-        <h2 class="text-3xl lg:text-4xl text-[#FF9C19] font-bold leading-snug mb-12 text-center">
+        <h2 class="text-3xl lg:text-4xl text-[#FF9C19] font-bold leading-snug mb-12 text-center fade-in">
           Confira as marcas que <span class="text-[#FF9C19] font-bold">confiaram</span> na Humanize <br>
           para <span class="text-[#FF9C19] font-bold">transformar</span> sua comunicação
         </h2>
@@ -1469,45 +1753,47 @@
  
 
       <!-- MODAL COM LAYOUT VERTICAL -->
-      <div id="modal" class="fixed inset-0 hidden items-center justify-center z-[999999] bg-black/20 backdrop-blur-sm p-4">
-        <div class="modal-content rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
-          <!-- Header do Modal -->
-          <div class="bg-gradient-to-r from-[#e83c50] to-[#ff6b7a] p-6 text-white relative">
-            <div class="flex justify-between items-center">
-              <h2 id="modalTitle" class="text-2xl font-bold"></h2>
-              <button onclick="closeModal()"
-                class="bg-white/20 hover:bg-white/30 rounded-full p-3 transition-all duration-300 hover:rotate-90">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
+      <div id="modal" class="hidden">
+  <div class="modal-content">
+    <!-- Header do Modal -->
+    <div class="bg-gradient-to-r from-[#e83c50] to-[#ff6b7a] p-6 text-white relative">
+      <div class="flex justify-between items-center">
+        <h2 id="modalTitle" class="text-2xl font-bold"></h2>
+        <button onclick="closeModal()"
+          class="bg-white/20 hover:bg-white/30 rounded-full p-3 transition-all duration-300 hover:rotate-90">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Corpo do Modal com Scroll -->
+    <div class="modal-body bg-white p-6">
+      <div class="modal-layout">
+        <!-- Coluna do Vídeo -->
+        <div class="video-column">
+          <div id="modalVideo" class="video-container-vertical">
+            <!-- Vídeo será inserido aqui -->
           </div>
+        </div>
 
-          <!-- Corpo do Modal com Scroll -->
-          <div class="modal-body bg-white p-6">
-            <div class="modal-layout">
-              <!-- Coluna do Vídeo -->
-              <div class="video-column">
-                <div id="modalVideo" class="video-container-vertical">
-                  <!-- Vídeo será inserido aqui -->
-                </div>
-              </div>
-
-              <!-- Coluna do Conteúdo -->
-              <div class="content-column">
-                <div id="modalContent" class="space-y-6">
-                  <!-- Conteúdo será preenchido aqui -->
-                </div>
-              </div>
-            </div>
+        <!-- Coluna do Conteúdo -->
+        <div class="content-column">
+          <div id="modalContent" class="space-y-6">
+            <!-- Conteúdo será preenchido aqui -->
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+  
     </section>
 
  <!-- Seção Julia Ribeiro -->
 <section class="md:px-8 py-8 h-full relative z-0">
   <div class="flex flex-col md:flex-row items-start relative gap-4 md:gap-6">
-    <div class="w-full md:w-1/2">
+    <div class="w-full md:w-1/2 slide-in-left">
       <div class="p-4 md:p-6 rounded-t-md inline-block mb-4 md:mb-6">
         <h1 class="text-3xl md:text-6xl font-authorB font-bold text-[#FF5B5B] leading-tight md:leading-tight">
           Julia Ribeiro
@@ -1525,7 +1811,7 @@
           de Mauá. Estou sempre em busca de evoluir e adquirir mais conhecimento na área.</p>
       </div>
     </div>
-    <div class="w-full md:w-1/2 flex justify-center items-start relative z-0 mt-6 md:mt-0">
+    <div class="w-full md:w-1/2 flex justify-center items-start relative z-0 mt-6 md:mt-0 slide-in-right">
       <img src="img/julia - portifólio.jpg" alt="Foto de Julia Ribeiro"
         class="imagem-julia max-h-[300px] md:max-h-[650px] w-auto object-contain relative z-0" />
     </div>
@@ -1540,10 +1826,10 @@
 
 
 <!-- Seção Orçamento -->
-<section id="orçamento" class="relative">
-  <div class="flex justify-center items-center mt-20 px-4">
+<section id="orçamento" class="relative leading-relaxed z-0">
+  <div class="flex justify-center items-center mt-20 px-4 z-0">
     <div
-      class="relative w-full max-w-5xl rounded-2xl overflow-hidden bg-gradient-to-r from-[#FF5A5F] to-[#FFA500] p-10 shadow-xl">
+      class="z-0 relative w-full max-w-5xl rounded-2xl overflow-hidden bg-gradient-to-r from-[#FF5A5F] to-[#FFA500] p-10 shadow-xl">
       <!-- Imagem de fundo com baixa opacidade -->
       <div class="absolute inset-0 opacity-5 z-10 pointer-events-none">
         <img src="img/Pattern_Humanize-2.png" alt="Background" class="w-full h-full object-cover" />
@@ -1554,15 +1840,15 @@
       <!-- Conteúdo principal -->
       <div class="relative z-20 grid md:grid-cols-2 gap-10 items-center">
         <!-- Texto lado esquerdo -->
-        <div class="text-[#FEF6EB] max-w-sm">
+        <div class="text-[#FEF6EB] max-w-sm fade-in">
           <h2 class="text-5xl font-authorB mb-6">Solicite seu orçamento <br> personalizado</h2>
-          <p class="text-lg leading-relaxed font-authorM">
+          <p class="text-lg  font-authorM">
             Conte um pouco sobre sua necessidade e nossa equipe entrará em contato com uma proposta feita sob
             medida.
           </p>
         </div>
         <!-- Box do formulário -->
-        <div class="bg-[#FEF6EB] text-gray-700 rounded-xl p-8 m-4 md:ml-[80px] shadow-lg font-authorM">
+        <div class="bg-[#FEF6EB] text-gray-700 rounded-xl p-8 m-4 md:ml-[80px] shadow-lg font-authorM fade-in" style="animation-delay: 0.3s;">
           
           <!-- Mensagem de sucesso -->
           <div id="mensagemSucessoOrcamento" class="hidden bg-green-500 text-white p-4 rounded-lg mb-4 text-center">
@@ -1639,10 +1925,10 @@
 </section>
 
     <!-- Seção Reunião -->
-<section id="reunião" class="relative py-16 md:py-24">
+<section id="reunião" class="relative py-16 md:py-24 fade-in">
   <div class="flex items-center justify-center">
     <div class="relative w-full max-w-4xl h-[800px] bg-[url('img/Pattern_Humanize-2.png')] bg-center bg-contain bg-no-repeat flex items-center justify-center top-10">
-      <div class="bg-[#FF5459] m-6 rounded-2xl shadow-2xl p-8 w-full max-w-md">
+      <div class="bg-[#FF5459] m-6 rounded-2xl shadow-2xl p-8 w-full max-w-md ">
         <h1 class="font-authorB text-3xl text-center text-[#FEF6EB] mb-6">Agende sua Reunião</h1>
         
         <!-- Mensagem de sucesso -->
@@ -1726,7 +2012,7 @@
   <section id="galeria" class="py-16 relative overflow-hidden">
     <div class="container mx-auto px-4">
         <!-- Cabeçalho da galeria -->
-        <div class="text-center mb-12 md:mb-16">
+        <div class="text-center mb-12 md:mb-16 fade-in">
             <h2 class="font-authorB text-4xl md:text-5xl text-[#FF9C19] mb-4">Por trás das Câmeras</h2>
             <p class="font-authorM text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
                 Transformamos ideias em experiências visuais marcantes que conectam marcas e pessoas
@@ -1737,7 +2023,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             
             <!-- Item 1 - CORRIGIDO -->
-            <div class="group relative overflow-hidden rounded-2xl  transform transition-all duration-500 hover:scale-[1.02] video-container">
+            <div class="group relative overflow-hidden rounded-2xl  transform transition-all duration-500 hover:scale-[1.02] video-container fade-in">
                 <div class="aspect-[4/5] overflow-hidden">
                     <!-- Use seus próprios vídeos aqui -->
                     <video class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
@@ -1775,7 +2061,7 @@
             </div>
 
             <!-- Item 2 - CORRIGIDO -->
-            <div class="group relative overflow-hidden rounded-2xl  transform transition-all duration-500 hover:scale-[1.02] video-container">
+            <div class="group relative overflow-hidden rounded-2xl  transform transition-all duration-500 hover:scale-[1.02] video-container fade-in" style="animation-delay: 0.2s;">
                 <div class="aspect-[4/5] overflow-hidden">
                     <video class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                            loop muted playsinline preload="metadata">
@@ -1803,7 +2089,7 @@
             </div>
 
             <!-- Item 3 - CORRIGIDO -->
-            <div class="group relative overflow-hidden rounded-2xl transform transition-all duration-500 hover:scale-[1.02] video-container">
+            <div class="group relative overflow-hidden rounded-2xl transform transition-all duration-500 hover:scale-[1.02] video-container fade-in" style="animation-delay: 0.4s;">
                 <div class="aspect-[4/5] overflow-hidden">
                     <video class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                            loop muted playsinline preload="metadata">
@@ -1831,7 +2117,7 @@
             </div>
 
             <!-- Item 4 - Vídeo horizontal CORRIGIDO -->
-            <div class="group relative overflow-hidden rounded-2xl transform transition-all duration-500 hover:scale-[1.02] lg:col-span-2 video-container">
+            <div class="group relative overflow-hidden rounded-2xl transform transition-all duration-500 hover:scale-[1.02] lg:col-span-2 video-container fade-in" style="animation-delay: 0.6s;">
                 <div class="aspect-[16/9] overflow-hidden">
                     <video class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                            loop muted playsinline preload="metadata">
@@ -1859,7 +2145,7 @@
             </div>
 
             <!-- Item 5 - CORRIGIDO -->
-            <div class="group relative overflow-hidden rounded-2xl  transform transition-all duration-500 hover:scale-[1.02] video-container">
+            <div class="group relative overflow-hidden rounded-2xl  transform transition-all duration-500 hover:scale-[1.02] video-container fade-in" style="animation-delay: 0.8s;">
                 <div class="aspect-[4/5] overflow-hidden ">
                     <video class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                            loop muted playsinline preload="metadata">
@@ -1896,16 +2182,16 @@
 
 
 <!-- CONTATO -->
-<section id="contato" class="relative py-12 md:py-20 bg-[#FEF6EB]">
+<section id="contato" class="relative py-12 md:py-20 bg-[#FEF6EB] ">
     <div class="container mx-auto px-4 sm:px-6 relative">
         <!-- Fundo com padrão sutil -->
-        <div class="absolute inset-0 bg-[url('img/Pattern_Humanize-2.png')] bg-cover bg-center opacity-5 z-0"></div>
+        <div class="absolute inset-0 max-h-200  bg-cover bg-center opacity-5 z-0"></div>
         
         <div class="relative z-10 w-full max-w-6xl mx-auto">
             <!-- Grid principal -->
             <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start">
-                <!-- Lado esquerdo - Texto "Vamos transformar..." -->
-                <div class="text-center lg:text-left pt-8">
+               
+                <div class="text-center lg:text-left pt-8 slide-in-left">
                     <h1 class="font-authorM text-3xl sm:text-4xl md:text-5xl text-[#FF5459] mb-4 leading-tight">
                         Vamos <span class="font-bold">transformar</span> sua <span class="font-bold">ideia</span> em <span class="font-bold">realidade</span>?
                     </h1>
@@ -1922,12 +2208,9 @@
                 
                 <!-- Lado direito - Caixa de contato COM A MULHER MAIS ALTA -->
                 <div class="relative rounded-3xl shadow-2xl bg-gradient-to-br from-[#FF5459] via-[#FF8A4B] to-[#FFA500]
-                       p-8 sm:p-10 overflow-visible w-full min-h-[500px] flex items-center">
+                       p-8 sm:p-10 overflow-visible w-full min-h-[500px] flex items-center slide-in-right">
                     
                     <!-- Mulher ilustração MAIS ALTA -->
-                    <img src="img/Ilust1_Humanize-1.png" 
-                         alt="Ilustração contato" 
-                         class="absolute -top-20 -right-4 h-[320px] md:h-[400px] lg:h-[450px] object-contain z-20">
                     
                     <div class="flex flex-col w-full relative z-10">
                         <!-- Informações de contato -->
@@ -2019,7 +2302,7 @@
             <div>
                 <h3 class="font-authorB text-lg mb-4">Nossos Serviços</h3>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="#serviços" class="text-white/90 hover:text-white transition">Criação de Identidade Visual</a></li>
+                    <li><a href="#serviços" class="text-white/90 hover:text-white ">Criação de Identidade Visual</a></li>
                     <li><a href="#serviços" class="text-white/90 hover:text-white transition">Gestão de Redes Sociais</a></li>
                     <li><a href="#serviços" class="text-white/90 hover:text-white transition">Criação de Conteúdo</a></li>
                     <li><a href="#serviços" class="text-white/90 hover:text-white transition">Cobertura em Eventos</a></li>
@@ -2087,12 +2370,126 @@
     </div>
   </footer>
 
+  <!-- Botão Flutuante -->
+<button class="floating-button" onclick="window.open('https://wa.me/5516997619684', '_blank')">
+    <p class="button__text">
+      <span style="--index: 0;">E</span>
+      <span style="--index: 1;">N</span>
+      <span style="--index: 2;">T</span>
+      <span style="--index: 3;">R</span>
+      <span style="--index: 4;">A</span>
+      <span style="--index: 5;">R</span>
+      <span style="--index: 6;"> </span>
+      <span style="--index: 7;">E</span>
+      <span style="--index: 8;">M</span>
+      <span style="--index: 9;"> </span>
+      <span style="--index: 10;">C</span>
+      <span style="--index: 11;">O</span>
+      <span style="--index: 12;">N</span>
+      <span style="--index: 13;">T</span>
+      <span style="--index: 14;">A</span>
+      <span style="--index: 15;">T</span>
+      <span style="--index: 16;">O</span>
+    </p>
+
+    <div class="button__circle">
+      <svg
+        viewBox="0 0 14 15"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="button__icon"
+        width="14"
+      >
+        <path
+          d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+          fill="currentColor"
+        ></path>
+      </svg>
+
+      <svg
+        viewBox="0 0 14 15"
+        fill="none"
+        width="14"
+        xmlns="http://www.w3.org/2000/svg"
+        class="button__icon button__icon--copy"
+      >
+        <path
+          d="M13.376 11.552l-.264-10.44-10.44-.24.024 2.28 6.96-.048L.2 12.56l1.488 1.488 9.432-9.432-.048 6.912 2.304.024z"
+          fill="currentColor"
+        ></path>
+      </svg>
+    </div>
+  </button>
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   
   <script>
-    // Configuração do Swiper
+    // ========== LOADER ==========
+    window.addEventListener('load', function() {
+      const loaderOverlay = document.getElementById('loader-overlay');
+      setTimeout(() => {
+        loaderOverlay.style.opacity = '0';
+        setTimeout(() => {
+          loaderOverlay.style.display = 'none';
+        }, 500);
+      }, 1500);
+    });
+
+    
+
+    // ========== TYPING EFFECT ==========
+    document.addEventListener('DOMContentLoaded', function() {
+      // Efeito de digitação no título principal
+      const typed = new Typed('#typed-text', {
+        strings: ['Humanizamos marcas,', 'Potencializamos conexões.'],
+        typeSpeed: 50,
+        backSpeed: 30,
+        backDelay: 2000,
+        startDelay: 500,
+        loop: true,
+        showCursor: true,
+        cursorChar: '|'
+      });
+
+      // Efeito de digitação em outros títulos
+      const typedServices = new Typed('#typed-services', {
+        strings: ['Soluções criativas', 'que humanizam sua comunicação.'],
+        typeSpeed: 40,
+        backSpeed: 25,
+        backDelay: 3000,
+        startDelay: 1000,
+        loop: true,
+        showCursor: true,
+        cursorChar: '|'
+      });
+    });
+
+    // ========== ANIMAÇÕES AO SCROLL ==========
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+          entry.target.style.opacity = '1';
+        }
+      });
+    }, observerOptions);
+
+    // Observar elementos com classes de animação
+    document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .bounce-in').forEach(el => {
+      el.style.opacity = '0';
+      el.style.animationPlayState = 'paused';
+      observer.observe(el);
+    });
+
+    // ========== CONFIGURAÇÃO DO SWIPER ==========
     const mainSwiper = new Swiper('.mySwiper', {
       loop: true,
       slidesPerView: 1,
@@ -2120,7 +2517,7 @@
       observeSlideChildren: true
     });
 
-    // Modal functionality
+    // ========== MODAL FUNCTIONALITY ==========
     const modal = document.getElementById('modal');
     const modalTitle = document.getElementById('modalTitle');
     const modalVideo = document.getElementById('modalVideo');
@@ -2148,10 +2545,10 @@
       atacadao: "ATACADÃO DO QUEIJO"
     };
 
-    const clientContents = {
+ const clientContents = {
       folkstore: {
         content: `
-          <div class="mb-6 z-20000">
+          <div class="mb-6">
             <h3 class="text-xl font-bold text-[#e83c50] mb-3">Sobre o Projeto</h3>
             <p class="text-gray-700 mb-4">A Folk Store é uma loja de roupas sustentável que buscava criar uma identidade visual única para se destacar no competitivo mercado de moda. Nosso desafio foi desenvolver uma comunicação autêntica que refletisse seus valores de sustentabilidade e qualidade.</p>
           </div>
@@ -2166,7 +2563,7 @@
             </div>
           </div>
           
-          <div class="mb-6 z-20000">
+          <div class="mb-6">
             <h3 class="text-xl font-bold text-[#e83c50] mb-3">Resultados Alcançados</h3>
             <div class="space-y-3">
               <div class="result-item">
@@ -2205,9 +2602,11 @@
           </div>
           
           <div class="text-center mt-8">
-            <button class="btn-primary">
-              <i class="fas fa-paper-plane mr-2"></i> QUERO RESULTADOS SIMILARES
-            </button>
+          <div class="text-center mt-8">
+    <button class="btn-primary" onclick="scrollToContato()">
+        <i class="fas fa-paper-plane mr-2"></i> QUERO RESULTADOS SIMILARES
+    </button>
+</div>
           </div>
         `
       },
@@ -2215,16 +2614,16 @@
         content: `
           <div class="mb-6">
             <h3 class="text-xl font-bold text-[#e83c50] mb-3">Sobre o Projeto</h3>
-            <p class="text-gray-700 mb-4">Dra. Raissa Martins é uma dentista que buscava estabelecer sua autoridade no mercado odontológico através de uma presença digital profissional e acolhedora.</p>
+            <p class="text-gray-700 mb-4">A Dra. Raissa Martins é dentista e buscava humanizar seu consultório, tornando a experiência odontológica mais acolhedora para seus pacientes. Desenvolvemos uma estratégia digital que transmitisse confiança e profissionalismo.</p>
           </div>
           
           <div class="mb-6">
             <h3 class="text-xl font-bold text-[#e83c50] mb-3">Serviços Prestados</h3>
             <div class="flex flex-wrap gap-2 mb-4">
-              <span class="service-tag"><i class="fas fa-user-md mr-2"></i>Branding Profissional</span>
-              <span class="service-tag"><i class="fas fa-camera mr-2"></i>Fotos Profissionais</span>
-              <span class="service-tag"><i class="fas fa-video mr-2"></i>Vídeos Educativos</span>
-              <span class="service-tag"><i class="fas fa-hashtag mr-2"></i>Gestão de Instagram</span>
+              <span class="service-tag"><i class="fas fa-tooth mr-2"></i>Branding Odontológico</span>
+              <span class="service-tag"><i class="fas fa-hashtag mr-2"></i>Social Media</span>
+              <span class="service-tag"><i class="fas fa-video mr-2"></i>Conteúdo Educativo</span>
+              <span class="service-tag"><i class="fas fa-calendar mr-2"></i>Agendamento Online</span>
             </div>
           </div>
           
@@ -2237,7 +2636,16 @@
                 </div>
                 <div>
                   <p class="font-semibold">+80% de novos pacientes</p>
-                  <p class="text-sm text-gray-600">Crescimento na base de clientes</p>
+                  <p class="text-sm text-gray-600">Crescimento na captação</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Autoridade digital consolidada</p>
+                  <p class="text-sm text-gray-600">Referência em odontologia</p>
                 </div>
               </div>
               <div class="result-item">
@@ -2245,11 +2653,22 @@
                   <i class="fas fa-comments"></i>
                 </div>
                 <div>
-                  <p class="font-semibold">Aumento de 120% no engajamento</p>
-                  <p class="text-sm text-gray-600">Maior interação com o público</p>
+                  <p class="font-semibold">Redução de 60% no medo odontológico</p>
+                  <p class="text-sm text-gray-600">Pacientes mais confortáveis</p>
                 </div>
               </div>
             </div>
+          </div>
+          
+          <div class="testimonial-card">
+            <h3 class="text-lg font-semibold mb-3">Depoimento da Cliente</h3>
+            <p class="text-gray-700 italic">"A Humanize transformou minha comunicação com os pacientes. Agora eles chegam ao consultório mais confiantes e informados. Minha agenda nunca esteve tão cheia e o melhor: com pacientes que realmente se identificam com meu trabalho."</p>
+          </div>
+          
+          <div class="text-center mt-8">
+           <button class="btn-primary" onclick="scrollToContato()">
+        <i class="fas fa-paper-plane mr-2"></i> QUERO RESULTADOS SIMILARES
+    </button>
           </div>
         `
       },
@@ -2257,15 +2676,16 @@
         content: `
           <div class="mb-6">
             <h3 class="text-xl font-bold text-[#e83c50] mb-3">Sobre o Projeto</h3>
-            <p class="text-gray-700 mb-4">O escritório de advocacia Fenerich precisava de uma estratégia digital que transmitisse confiança e profissionalismo, atraindo clientes de forma qualificada.</p>
+            <p class="text-gray-700 mb-4">O escritório Advocacia Fenerich buscava modernizar sua comunicação digital para atrair um público mais jovem e conectado, mantendo a seriedade e credibilidade necessárias no segmento jurídico.</p>
           </div>
           
           <div class="mb-6">
             <h3 class="text-xl font-bold text-[#e83c50] mb-3">Serviços Prestados</h3>
             <div class="flex flex-wrap gap-2 mb-4">
               <span class="service-tag"><i class="fas fa-gavel mr-2"></i>Branding Jurídico</span>
-              <span class="service-tag"><i class="fas fa-newspaper mr-2"></i>Conteúdo Especializado</span>
-              <span class="service-tag"><i class="fas fa-chart-line mr-2"></i>Estratégia Digital</span>
+              <span class="service-tag"><i class="fas fa-hashtag mr-2"></i>Social Media</span>
+              <span class="service-tag"><i class="fas fa-blog mr-2"></i>Conteúdo Jurídico</span>
+              <span class="service-tag"><i class="fas fa-search mr-2"></i>SEO Especializado</span>
             </div>
           </div>
           
@@ -2274,128 +2694,414 @@
             <div class="space-y-3">
               <div class="result-item">
                 <div class="result-icon">
-                  <i class="fas fa-briefcase"></i>
+                  <i class="fas fa-balance-scale"></i>
                 </div>
                 <div>
-                  <p class="font-semibold">+40% em consultorias</p>
-                  <p class="text-sm text-gray-600">Aumento no volume de negócios</p>
+                  <p class="font-semibold">+120% de leads qualificados</p>
+                  <p class="text-sm text-gray-600">Clientes mais alinhados</p>
                 </div>
               </div>
               <div class="result-item">
                 <div class="result-icon">
-                  <i class="fas fa-search"></i>
+                  <i class="fas fa-chart-bar"></i>
                 </div>
                 <div>
-                  <p class="font-semibold">Posicionamento de autoridade</p>
-                  <p class="text-sm text-gray-600">Reconhecimento no mercado</p>
+                  <p class="font-semibold">Posicionamento no topo do Google</p>
+                  <p class="text-sm text-gray-600">Para palavras-chave estratégicas</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-user-tie"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Imagem moderna e confiável</p>
+                  <p class="text-sm text-gray-600">Equilíbrio entre inovação e tradição</p>
                 </div>
               </div>
             </div>
+          </div>
+          
+          <div class="testimonial-card">
+            <h3 class="text-lg font-semibold mb-3">Depoimento do Cliente</h3>
+            <p class="text-gray-700 italic">"A Humanize conseguiu o que poucos: modernizar nossa comunicação sem perder a credibilidade. Agora atendemos um perfil de cliente mais diversificado e as consultas aumentaram significativamente. A estratégia digital foi fundamental."</p>
+          </div>
+          
+          <div class="text-center mt-8">
+             <button class="btn-primary" onclick="scrollToContato()">
+        <i class="fas fa-paper-plane mr-2"></i> QUERO RESULTADOS SIMILARES
+    </button>
+          </div>
+        `
+      },
+      mariane: {
+        content: `
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Sobre o Projeto</h3>
+            <p class="text-gray-700 mb-4">Mariane Menezes é uma profissional da área de coaching e desenvolvimento pessoal que precisava construir uma marca pessoal forte e autêntica para expandir seu alcance e impactar mais pessoas.</p>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Serviços Prestados</h3>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="service-tag"><i class="fas fa-user mr-2"></i>Personal Branding</span>
+              <span class="service-tag"><i class="fas fa-hashtag mr-2"></i>Social Media</span>
+              <span class="service-tag"><i class="fas fa-video mr-2"></i>Conteúdo em Vídeo</span>
+              <span class="service-tag"><i class="fas fa-rocket mr-2"></i>Estratégia Digital</span>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Resultados Alcançados</h3>
+            <div class="space-y-3">
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Crescimento de 300% no Instagram</p>
+                  <p class="text-sm text-gray-600">Comunidade engajada</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-gem"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Marca pessoal consolidada</p>
+                  <p class="text-sm text-gray-600">Autoridade no segmento</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Aumento de 150% na renda</p>
+                  <p class="text-sm text-gray-600">Com serviços premium</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="testimonial-card">
+            <h3 class="text-lg font-semibold mb-3">Depoimento da Cliente</h3>
+            <p class="text-gray-700 italic">"Trabalhar com a Humanize foi transformador. Eles entenderam minha essência e criaram uma estratégia que me permitiu conectar com meu público de forma genuína. Minha carreira deu um salto que eu não imaginava ser possível."</p>
+          </div>
+          
+          <div class="text-center mt-8">
+             <button class="btn-primary" onclick="scrollToContato()">
+        <i class="fas fa-paper-plane mr-2"></i> QUERO RESULTADOS SIMILARES
+    </button>
+          </div>
+        `
+      },
+      lasorrella: {
+        content: `
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Sobre o Projeto</h3>
+            <p class="text-gray-700 mb-4">A La Sorrella é uma pizzaria tradicional que buscava se reposicionar no mercado digital para competir com as grandes redes de delivery, mantendo sua identidade artesanal e familiar.</p>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Serviços Prestados</h3>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="service-tag"><i class="fas fa-pizza-slice mr-2"></i>Branding Gastronômico</span>
+              <span class="service-tag"><i class="fas fa-hashtag mr-2"></i>Social Media</span>
+              <span class="service-tag"><i class="fas fa-utensils mr-2"></i>Fotografia de Alimentos</span>
+              <span class="service-tag"><i class="fas fa-motorcycle mr-2"></i>Estratégia Delivery</span>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Resultados Alcançados</h3>
+            <div class="space-y-3">
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Aumento de 200% nas vendas online</p>
+                  <p class="text-sm text-gray-600">Crescimento no delivery</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Melhor avaliação no iFood</p>
+                  <p class="text-sm text-gray-600">4.9 estrelas</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Fidelização de clientes</p>
+                  <p class="text-sm text-gray-600">Comunidade ativa</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="testimonial-card">
+            <h3 class="text-lg font-semibold mb-3">Depoimento do Cliente</h3>
+            <p class="text-gray-700 italic">"A Humanize revolucionou nosso negócio. As estratégias digitais implementadas não apenas aumentaram nossas vendas, mas criaram uma comunidade de clientes fiéis. Hoje somos referência em pizzaria artesanal na região."</p>
+          </div>
+          
+          <div class="text-center mt-8">
+            <button class="btn-primary" onclick="scrollToContato()">
+        <i class="fas fa-paper-plane mr-2"></i> QUERO RESULTADOS SIMILARES
+    </button>
+          </div>
+        `
+      },
+      gringo: {
+        content: `
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Sobre o Projeto</h3>
+            <p class="text-gray-700 mb-4">O Gringo Bar Café é um estabelecimento que mistura conceito de bar e cafeteria, buscando atrair um público jovem e descolado durante o dia e a noite, com experiências gastronômicas únicas.</p>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Serviços Prestados</h3>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="service-tag"><i class="fas fa-coffee mr-2"></i>Branding Gastronômico</span>
+              <span class="service-tag"><i class="fas fa-hashtag mr-2"></i>Social Media</span>
+              <span class="service-tag"><i class="fas fa-camera mr-2"></i>Fotografia Profissional</span>
+              <span class="service-tag"><i class="fas fa-calendar-alt mr-2"></i>Eventos e Promoções</span>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Resultados Alcançados</h3>
+            <div class="space-y-3">
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-user-friends"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Lotação máxima nos fins de semana</p>
+                  <p class="text-sm text-gray-600">Aumento de 150% no movimento</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-music"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Sucesso em eventos temáticos</p>
+                  <p class="text-sm text-gray-600">Noites sempre lotadas</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Ponto de referência na cidade</p>
+                  <p class="text-sm text-gray-600">Local badalado e desejado</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="testimonial-card">
+            <h3 class="text-lg font-semibold mb-3">Depoimento do Cliente</h3>
+            <p class="text-gray-700 italic">"A Humanize entendeu perfeitamente nosso conceito único e soube traduzi-lo para o digital. Criamos uma identidade forte que atrai exatamente o público que queremos. O movimento aumentou consideravelmente e nos tornamos um point na cidade."</p>
+          </div>
+          
+          <div class="text-center mt-8">
+     <button class="btn-primary" onclick="scrollToContato()">
+        <i class="fas fa-paper-plane mr-2"></i> QUERO RESULTADOS SIMILARES
+    </button>
+          </div>
+        `
+      },
+      andazi: {
+        content: `
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Sobre o Projeto</h3>
+            <p class="text-gray-700 mb-4">A Andazi é uma marca de calçados femininos que buscava se reposicionar no mercado digital, criando uma identidade visual sofisticada e moderna para atrair um público mais jovem e fashionista.</p>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Serviços Prestados</h3>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="service-tag"><i class="fas fa-shoe-prints mr-2"></i>Branding de Moda</span>
+              <span class="service-tag"><i class="fas fa-hashtag mr-2"></i>Social Media</span>
+              <span class="service-tag"><i class="fas fa-shopping-bag mr-2"></i>E-commerce</span>
+              <span class="service-tag"><i class="fas fa-camera mr-2"></i>Produção de Conteúdo</span>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Resultados Alcançados</h3>
+            <div class="space-y-3">
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Crescimento de 180% nas vendas online</p>
+                  <p class="text-sm text-gray-600">E-commerce consolidado</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-tshirt"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Identidade visual reconhecida</p>
+                  <p class="text-sm text-gray-600">Marca com personalidade</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-heart"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Comunidade fiel de clientes</p>
+                  <p class="text-sm text-gray-600">Alta taxa de recompra</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="testimonial-card">
+            <h3 class="text-lg font-semibold mb-3">Depoimento do Cliente</h3>
+            <p class="text-gray-700 italic">"A Humanize transformou completamente nossa presença digital. Desenvolvemos uma identidade que realmente representa nossa marca e conseguimos conquistar um público fiel. As vendas online dispararam e hoje temos uma comunidade engajada que ama nossos produtos."</p>
+          </div>
+          
+          <div class="text-center mt-8">
+            <button class="btn-primary" onclick="scrollToContato()">
+        <i class="fas fa-paper-plane mr-2"></i> QUERO RESULTADOS SIMILARES
+    </button>
+          </div>
+        `
+      },
+      atacadao: {
+        content: `
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Sobre o Projeto</h3>
+            <p class="text-gray-700 mb-4">O Atacadão do Queijo é um estabelecimento especializado em queijos finos e produtos relacionados, que buscava expandir seu alcance além do comércio local, atraindo clientes de outras cidades e criando uma experiência digital única.</p>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Serviços Prestados</h3>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="service-tag"><i class="fas fa-cheese mr-2"></i>Branding Alimentício</span>
+              <span class="service-tag"><i class="fas fa-hashtag mr-2"></i>Social Media</span>
+              <span class="service-tag"><i class="fas fa-truck mr-2"></i>E-commerce e Delivery</span>
+              <span class="service-tag"><i class="fas fa-graduation-cap mr-2"></i>Conteúdo Educativo</span>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-[#e83c50] mb-3">Resultados Alcançados</h3>
+            <div class="space-y-3">
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Expansão para outras cidades</p>
+                  <p class="text-sm text-gray-600">Atendimento regional</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-shipping-fast"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Implementação de delivery</p>
+                  <p class="text-sm text-gray-600">Sucesso nas vendas online</p>
+                </div>
+              </div>
+              <div class="result-item">
+                <div class="result-icon">
+                  <i class="fas fa-award"></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Autoridade em queijos finos</p>
+                  <p class="text-sm text-gray-600">Referência no segmento</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="testimonial-card">
+            <h3 class="text-lg font-semibold mb-3">Depoimento do Cliente</h3>
+            <p class="text-gray-700 italic">"A Humanize nos mostrou que é possível transformar um negócio tradicional em uma empresa digital de sucesso. Com a nova estratégia, expandimos nosso alcance, implementamos delivery e nos tornamos referência em queijos na região. O crescimento foi extraordinário."</p>
+          </div>
+          
+          <div class="text-center mt-8">
+          <button class="btn-primary" onclick="scrollToContato()">
+        <i class="fas fa-paper-plane mr-2"></i> QUERO RESULTADOS SIMILARES
+    </button>
           </div>
         `
       }
     };
 
-    // CONFIGURAÇÃO DO SWIPER - CARROSSEL DE CLIENTES
-    const portfolioSwiper = new Swiper('.mySwiper', {
-      loop: true,
-      slidesPerView: 'auto',
-      spaceBetween: 30,
-      centeredSlides: true,
-      initialSlide: 1,
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      breakpoints: {
-        320: {
-          slidesPerView: 1,
-          spaceBetween: 20,
-        },
-        640: {
-          slidesPerView: 1,
-          spaceBetween: 20,
-        },
-        768: {
-          slidesPerView: 2,
-          spaceBetween: 30,
-        },
-        1024: {
-          slidesPerView: 3,
-          spaceBetween: 40,
-        },
-        1280: {
-          slidesPerView: 4,
-          spaceBetween: 50,
-        }
-      },
-      observer: true,
-      observeParents: true,
-    });
 
     function openModal(client) {
-        console.log('🎯 Abrindo modal para:', client);
+    console.log('🎯 Abrindo modal para:', client);
+    
+    const modal = document.getElementById('modal');
+    
+    // Remover a classe hidden para mostrar o modal
+    modal.classList.remove('hidden');
+    
+    // Adicionar classe ao body para prevenir scroll
+    document.body.classList.add('modal-open');
         
-        const modal = document.getElementById('modal');
+    modalTitle.textContent = clientNames[client];
+    
+    modalVideo.innerHTML = `
+        <video controls playsinline webkit-playsinline muted preload="auto" style="width: 100%; height: 100%; object-fit: cover;">
+            <source src="${videos[client]}" type="video/mp4">
+            Seu navegador não suporta vídeos.
+        </video>
+    `;
+
+    modalContent.innerHTML = clientContents[client]?.content || `
+      <div class="text-center py-8">
+        <p class="text-gray-600">Conteúdo em desenvolvimento para ${clientNames[client]}</p>
+      </div>
+    `;
+    modalContent.scrollTop = 0;
+
+    setTimeout(() => {
+        const video = modalVideo.querySelector('video');
+        if (video) {
+            video.play().catch(e => {
+                console.log('Autoplay bloqueado, usuário precisa interagir');
+            });
+        }
+    }, 100);
+}
+
+   function closeModal() {
+    console.log('🔒 Fechando modal');
+    
+    const modal = document.getElementById('modal');
+    modal.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+
+    // Pausar vídeos
+    const videos = document.querySelectorAll('video');
+    videos.forEach(video => {
+        video.pause();
+        video.currentTime = 0;
+    });
+}
         
-        modal.style.cssText = `
-            position: fixed;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            z-index: 99999;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        `;
+
         
-        document.body.style.overflow = 'hidden';
-
-        modalTitle.textContent = clientNames[client];
-        
-        modalVideo.innerHTML = `
-            <video controls playsinline webkit-playsinline muted preload="auto" style="width: 100%; height: 100%; object-fit: cover;">
-                <source src="${videos[client]}" type="video/mp4">
-                Seu navegador não suporta vídeos.
-            </video>
-        `;
-
-        modalContent.innerHTML = clientContents[client]?.content || `
-          <div class="text-center py-8">
-            <p class="text-gray-600">Conteúdo em desenvolvimento para ${clientNames[client]}</p>
-          </div>
-        `;
-        modalContent.scrollTop = 0;
-
-        setTimeout(() => {
-            const video = modalVideo.querySelector('video');
-            if (video) {
-                video.play().catch(e => {
-                    console.log('Autoplay bloqueado, usuário precisa interagir');
-                });
-            }
-        }, 100);
-    }
-
-    function closeModal() {
-        console.log('🔒 Fechando modal');
-        
-        const modal = document.getElementById('modal');
-        modal.style.display = 'none';
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-
-        const videos = document.querySelectorAll('video');
-        videos.forEach(video => {
-            video.pause();
-            video.currentTime = 0;
-        });
-    }
+  
 
     document.addEventListener('click', (e) => {
         if (e.target.id === 'modal') {
@@ -2409,7 +3115,7 @@
         }
     });
 
-    // Mobile menu functionality
+    // ========== MOBILE MENU FUNCTIONALITY ==========
     const menuBtn = document.getElementById('menu-btn');
     const closeBtn = document.getElementById('close-btn');
     const sidebar = document.getElementById('mobile-sidebar');
@@ -2442,7 +3148,7 @@
       overlay.addEventListener('click', closeMobileMenu);
     }
 
-    // Desktop sidebar functionality
+    // ========== DESKTOP SIDEBAR FUNCTIONALITY ==========
     document.addEventListener('DOMContentLoaded', function() {
       const desktopSidebar = document.querySelector('.desktop-sidebar');
       const mainContent = document.querySelector('main');
@@ -2473,7 +3179,7 @@
       window.addEventListener('resize', handleSidebar);
     });
 
-    // Formulário de Orçamento
+    // ========== FORMULÁRIO DE ORÇAMENTO ==========
     document.getElementById('formOrcamento').addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -2550,7 +3256,7 @@ _Solicitação enviada via site_ - AGUARDE A RESPOSTA DA EQUIPE
         }
     });
 
-    // Formulário de Reunião
+    // ========== FORMULÁRIO DE REUNIÃO ==========
     document.getElementById('formReuniao').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -2615,7 +3321,7 @@ _Agendamento realizado via site - AGUARDE A CONFIRMAÇÃO_
         }
     });
 
-    // Controles de vídeo da galeria
+    // ========== CONTROLES DE VÍDEO DA GALERIA ==========
     document.addEventListener('DOMContentLoaded', function() {
         const videoContainers = document.querySelectorAll('.video-container');
         
@@ -2701,6 +3407,37 @@ _Agendamento realizado via site - AGUARDE A CONFIRMAÇÃO_
             }
         });
     });
+
+    // ========== SMOOTH SCROLL ==========
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    //botao 
+    function scrollToContato() {
+    // Fecha o modal primeiro
+    closeModal();
+    
+    // Aguarda o modal fechar e depois scrolla para a seção de contato
+    setTimeout(() => {
+        const contatoSection = document.getElementById('contato');
+        if (contatoSection) {
+            contatoSection.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    }, 300);
+}
   </script>
 </body>
 </html>
