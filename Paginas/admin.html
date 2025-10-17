@@ -49,8 +49,7 @@
       </button>
     </div>
     <nav id="sidebarNav" class="flex flex-col gap-2 md:gap-4">
-      <a href="#" class="hover:bg-white/20 px-4 py-2 rounded">Dashboard</a>
-      <a href="/HUMANIZE - PROJETO FINAL/index.html" class="hover:bg-white/20 px-4 py-2 rounded">Início</a>
+      <a href="../index.html" class="hover:bg-white/20 px-4 py-2 rounded">Início</a>
       <button id="logoutBtn" class="hover:bg-white/20 px-4 py-2 rounded text-left">Sair</button>
     </nav>
   </div>
@@ -259,7 +258,7 @@ carregarClientes();
 // Logout
 logoutBtn.addEventListener('click', function() {
   localStorage.removeItem('usuarioLogado');
-  window.location.href = '/HUMANIZE - PROJETO FINAL/index.html';
+  window.location.href = '../index.html';
 });
 // Função para salvar alterações do status
 async function salvarAlteracoesStatus(pedidoId, novoStatus) {
