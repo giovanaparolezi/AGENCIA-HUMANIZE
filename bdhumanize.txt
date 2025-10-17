@@ -728,3 +728,59 @@ begin
   return true;
 end;
 $$;
+CREATE OR REPLACE FUNCTION criar_token_reset(email_text TEXT)
+RETURNS TEXT
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  cliente_id UUID;
+  token TEXT := encode(gen_random_bytes(16), 'hex');
+BEGIN
+  SELECT id INTO cliente_id 
+  FROM clientes 
+  WHERE email = email_text;
+
+  IF cliente_id IS NULL THEN
+    RETURN NULL;
+  END IF;
+
+  INSERT INTO password_reset_tokens (token, cliente_id, expires_at)
+  VALUES (token, cliente_id, NOW() + INTERVAL '1 hour');
+
+  RETURN token;
+END;
+$$;
+CREATE OR REPLACE FUNCTION resetar_senha(token_text TEXT, nova_senha TEXT)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  token_record RECORD;
+BEGIN
+  -- Buscar token válido
+  SELECT * INTO token_record
+  FROM password_reset_tokens
+  WHERE token = token_text
+    AND expires_at > NOW()
+    AND used = FALSE;
+
+  IF token_record IS NULL THEN
+    RETURN FALSE;
+  END IF;
+
+  -- Atualizar a senha
+  UPDATE clientes
+  SET senha = nova_senha,
+      atualizado_em = NOW()
+  WHERE id = token_record.cliente_id;
+
+  -- Marcar token como usado
+  UPDATE password_reset_tokens
+  SET used = TRUE
+  WHERE id = token_record.id;
+
+  RETURN TRUE;
+END;
+$$;
