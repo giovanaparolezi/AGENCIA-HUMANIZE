@@ -5,15 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cadastro - Humanize</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Nova versão do Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="flex items-center justify-center min-h-screen bg-[#FFF6EE] relative">
   <!-- Background -->
- 
-
-  <!-- Ícones decorativos -->
   <div class="absolute inset-0 flex items-center justify-center -z-10">
     <img src="img/Pattern_Humanize-2.png" alt="decoração" class="max-w-[700px] opacity-90">
   </div>
@@ -94,24 +90,25 @@
 
       console.log('Página carregada, iniciando...');
 
-      // Carregar nichos - com fallback automático
+      // Carregar nichos
       carregarNichos();
 
       async function carregarNichos() {
         try {
           console.log('Tentando carregar nichos do Supabase...');
           
+          // Primeiro, tenta carregar do Supabase
           const { data: nichos, error } = await supabaseClient
             .from('nichos')
             .select('id, nome')
             .order('nome');
 
           if (error) {
-            console.error('Erro ao carregar nichos:', error);
+            console.error('Erro ao carregar nichos do Supabase:', error);
             throw error;
           }
 
-          console.log('Nichos carregados:', nichos);
+          console.log('Nichos carregados do Supabase:', nichos);
 
           if (nichos && nichos.length > 0) {
             nichoSelect.innerHTML = '<option value="" disabled selected>Selecione seu nicho...</option>';
@@ -122,11 +119,12 @@
               nichoSelect.appendChild(option);
             });
           } else {
-            throw new Error('Nenhum nicho encontrado');
+            console.warn('Nenhum nicho encontrado no Supabase');
+            usarNichosFallback();
           }
 
         } catch (error) {
-          console.error('Falha ao carregar nichos, usando fallback:', error);
+          console.error('Falha ao carregar nichos do Supabase, usando fallback:', error);
           usarNichosFallback();
         }
       }
@@ -194,12 +192,31 @@
           // 1. Cadastrar no Auth
           const { data: authData, error: authError } = await supabaseClient.auth.signUp({
             email: dados.email,
-            password: dados.senha
+            password: dados.senha,
+            options: {
+              data: {
+                nome: dados.nome,
+                empresa: dados.empresa
+              }
+            }
           });
 
           if (authError) {
             console.error('Erro no Auth:', authError);
-            alert('Erro no cadastro: ' + authError.message);
+            
+            // Verificar se é erro de usuário já existente
+            if (authError.message.includes('already registered')) {
+              alert('Este email já está cadastrado. Tente fazer login.');
+            } else {
+              alert('Erro no cadastro: ' + authError.message);
+            }
+            
+            resetarBotao();
+            return;
+          }
+
+          if (!authData.user) {
+            alert('Erro ao criar usuário. Tente novamente.');
             resetarBotao();
             return;
           }
@@ -207,7 +224,7 @@
           console.log('Usuário criado no Auth:', authData.user.id);
 
           // 2. Inserir na tabela clientes
-          const { error: insertError } = await supabaseClient
+          const { data: clienteData, error: insertError } = await supabaseClient
             .from('clientes')
             .insert({
               nome: dados.nome,
@@ -216,22 +233,30 @@
               empresa: dados.empresa,
               nicho_id: dados.nicho,
               auth_id: authData.user.id
-            });
+            })
+            .select()
+            .single();
 
           if (insertError) {
             console.error('Erro ao inserir cliente:', insertError);
-            alert('Erro ao salvar dados: ' + insertError.message);
+            
+            // Se falhar ao inserir cliente, tenta deletar o usuário do Auth
+            await supabaseClient.auth.admin.deleteUser(authData.user.id);
+            
+            alert('Erro ao salvar dados do cliente: ' + insertError.message);
             resetarBotao();
             return;
           }
 
+          console.log('Cliente inserido com sucesso:', clienteData);
           console.log('Cadastro completo com sucesso!');
-          alert('Cadastro realizado com sucesso! Verifique seu email.');
+          
+          alert('Cadastro realizado com sucesso! Verifique seu email para confirmação.');
           window.location.href = "./login.html";
 
         } catch (error) {
           console.error('Erro inesperado:', error);
-          alert('Erro: ' + error.message);
+          alert('Erro inesperado: ' + error.message);
           resetarBotao();
         }
       });

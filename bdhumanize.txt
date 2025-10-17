@@ -440,4 +440,291 @@ ALTER TABLE password_reset_tokens ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "allow_all_password_reset" ON password_reset_tokens;
 CREATE POLICY "allow_all_password_reset" ON password_reset_tokens
 FOR ALL USING (true);
-ALTER TABLE clientes ADD COLUMN senha TEXT;
+ALTER TABLE clientes ADD COLUMN senha TEXT;-- Adicionar coluna de senha se não existir
+ALTER TABLE clientes ADD COLUMN IF NOT EXISTS senha TEXT;
+ALTER TABLE clientes ADD COLUMN IF NOT EXISTS atualizado_em TIMESTAMP DEFAULT NOW();
+
+-- Permitir atualizações (desative RLS temporariamente se necessário)
+ALTER TABLE clientes DISABLE ROW LEVEL SECURITY;
+CREATE OR REPLACE FUNCTION resetar_senha(token_text TEXT, nova_senha TEXT)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  token_record password_reset_tokens%ROWTYPE;
+  cliente_id UUID;
+BEGIN
+  -- Buscar o token
+  SELECT * INTO token_record
+  FROM password_reset_tokens
+  WHERE token = token_text AND used = FALSE AND expires_at > NOW();
+
+  IF token_record IS NULL THEN
+    RETURN FALSE;
+  END IF;
+
+  -- Marcar o token como usado
+  UPDATE password_reset_tokens SET used = TRUE WHERE id = token_record.id;
+
+  -- Atualizar a senha do cliente
+  UPDATE clientes SET senha = nova_senha WHERE id = token_record.cliente_id;
+
+  RETURN TRUE;
+END;
+$$;
+
+-- Remover políticas existentes na tabela clientes
+DROP POLICY IF EXISTS "Cliente pode ver seus dados" ON clientes;
+DROP POLICY IF EXISTS "Clientes podem ler seus próprios dados" ON clientes;
+DROP POLICY IF EXISTS "Cliente atualiza seus dados" ON clientes;
+DROP POLICY IF EXISTS "Clientes podem inserir seu próprio registro" ON clientes;
+DROP POLICY IF EXISTS "Clientes podem se cadastrar" ON clientes;
+DROP POLICY IF EXISTS "Permitir inserção sem auth" ON clientes;
+DROP POLICY IF EXISTS "Admin pode gerenciar todos os clientes" ON clientes;
+DROP POLICY IF EXISTS "Cliente pode se cadastrar" ON clientes;
+DROP POLICY IF EXISTS "Cliente atualiza dados" ON clientes;
+
+-- Criar novas políticas simplificadas para clientes
+CREATE POLICY "Clientes leem seus dados" ON clientes
+FOR SELECT USING (auth_id = auth.uid());
+
+CREATE POLICY "Clientes inserem seus dados" ON clientes
+FOR INSERT WITH CHECK (auth_id = auth.uid());
+
+CREATE POLICY "Clientes atualizam seus dados" ON clientes
+FOR UPDATE USING (auth_id = auth.uid());
+
+-- Política para permitir update durante o reset de senha (sem auth)
+CREATE POLICY "Permitir update para reset de senha" ON clientes
+FOR UPDATE USING (true);
+
+-- Criar a tabela se não existir (já existe, então só garantir a estrutura)
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    cliente_id UUID NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
+    token TEXT UNIQUE NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    used BOOLEAN DEFAULT FALSE
+);
+
+-- Criar índices
+CREATE INDEX IF NOT EXISTS idx_tokens_token ON password_reset_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_tokens_expires ON password_reset_tokens(expires_at);
+CREATE INDEX IF NOT EXISTS idx_tokens_cliente ON password_reset_tokens(cliente_id);
+
+-- Ativar RLS
+ALTER TABLE password_reset_tokens ENABLE ROW LEVEL SECURITY;
+
+-- Política para permitir todas as operações em password_reset_tokens (sem autenticação)
+DROP POLICY IF EXISTS "allow_all_password_reset" ON password_reset_tokens;
+CREATE POLICY "allow_all_password_reset" ON password_reset_tokens
+FOR ALL USING (true);
+
+-- Função para criar token de reset
+CREATE OR REPLACE FUNCTION criar_token_reset(email_text TEXT)
+RETURNS TEXT
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+    token_uuid TEXT;
+    cliente_record RECORD;
+BEGIN
+    -- Buscar cliente pelo email
+    SELECT * INTO cliente_record 
+    FROM clientes 
+    WHERE email = email_text;
+    
+    IF cliente_record.id IS NULL THEN
+        RETURN NULL;
+    END IF;
+    
+    -- Gerar token
+    token_uuid := gen_random_uuid()::text;
+    
+    -- Inserir token
+    INSERT INTO password_reset_tokens 
+    (cliente_id, token, expires_at)
+    VALUES 
+    (cliente_record.id, token_uuid, NOW() + INTERVAL '1 hour');
+    
+    RETURN token_uuid;
+END;
+$$;
+
+-- Função para resetar senha
+CREATE OR REPLACE FUNCTION resetar_senha(token_text TEXT, nova_senha TEXT)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+    token_record RECORD;
+BEGIN
+    -- Verificar token
+    SELECT * INTO token_record
+    FROM password_reset_tokens
+    WHERE token = token_text 
+    AND expires_at > NOW() 
+    AND NOT used;
+    
+    IF token_record.id IS NULL THEN
+        RETURN FALSE;
+    END IF;
+    
+    -- Atualizar senha
+    UPDATE clientes 
+    SET senha = nova_senha,
+        atualizado_em = NOW()
+    WHERE id = token_record.cliente_id;
+    
+    -- Marcar token como usado
+    UPDATE password_reset_tokens
+    SET used = TRUE
+    WHERE id = token_record.id;
+    
+    RETURN TRUE;
+END;
+$$;
+
+ALTER TABLE clientes ADD COLUMN IF NOT EXISTS atualizado_em TIMESTAMP DEFAULT NOW();
+
+ALTER TABLE clientes ADD COLUMN IF NOT EXISTS senha TEXT;
+
+-- Verificar e criar tabela de tokens se não existir
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    cliente_id UUID NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
+    token TEXT NOT NULL UNIQUE,
+    expires_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    used BOOLEAN DEFAULT FALSE
+);
+
+-- Criar índices para performance
+CREATE INDEX IF NOT EXISTS idx_tokens_token ON password_reset_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_tokens_expires ON password_reset_tokens(expires_at);
+CREATE INDEX IF NOT EXISTS idx_tokens_cliente ON password_reset_tokens(cliente_id);
+
+-- Garantir que a coluna de senha existe
+ALTER TABLE clientes ADD COLUMN IF NOT EXISTS senha TEXT;
+ALTER TABLE clientes ADD COLUMN IF NOT EXISTS atualizado_em TIMESTAMP DEFAULT NOW();
+
+-- Configurar políticas RLS (se necessário)
+ALTER TABLE password_reset_tokens ENABLE ROW LEVEL SECURITY;
+
+-- Política para permitir todas as operações em password_reset_tokens
+DROP POLICY IF EXISTS "allow_all_password_reset" ON password_reset_tokens;
+CREATE POLICY "allow_all_password_reset" ON password_reset_tokens
+FOR ALL USING (true);
+
+-- 1. Garantir que a tabela nichos tem RLS desativado ou política de leitura pública
+ALTER TABLE nichos ENABLE ROW LEVEL SECURITY;
+
+-- Política para permitir leitura pública dos nichos
+DROP POLICY IF EXISTS "Permitir leitura pública de nichos" ON nichos;
+CREATE POLICY "Permitir leitura pública de nichos" ON nichos
+FOR SELECT USING (true);
+
+-- 2. Corrigir políticas da tabela clientes
+DROP POLICY IF EXISTS "Clientes podem inserir seus dados" ON clientes;
+CREATE POLICY "Clientes podem inserir seus dados" ON clientes
+FOR INSERT WITH CHECK (auth.uid() = auth_id);
+
+-- 3. Garantir que novos usuários possam se cadastrar
+DROP POLICY IF EXISTS "Permitir inserção durante cadastro" ON clientes;
+CREATE POLICY "Permitir inserção durante cadastro" ON clientes
+FOR INSERT WITH CHECK (true);
+
+-- 4. Verificar se os nichos existem na tabela
+INSERT INTO nichos (nome) VALUES
+('Marketing Digital'),
+('Design Gráfico'),
+('Desenvolvimento Web'),
+('Fotografia'),
+('Consultoria Empresarial')
+ON CONFLICT (nome) DO NOTHING;
+
+create or replace function criar_token_reset(email_text text)
+returns text
+language plpgsql
+as $$
+declare
+  cliente_id uuid;
+  token text := encode(gen_random_bytes(16), 'hex');
+begin
+  select id into cliente_id from clientes where email = email_text;
+
+  if cliente_id is null then
+    return null;
+  end if;
+
+  insert into tokens_reset_senha (token, id_cliente, expira_em)
+  values (token, cliente_id, now() + interval '1 hour');
+
+  perform
+    net.http_post(
+      url := 'https://aoyycbedxetmnavmhesf.supabase.co/functions/v1/send-reset-email',
+      headers := jsonb_build_object('Content-Type', 'application/json'),
+      body := jsonb_build_object(
+        'email', email_text,
+        'token', token
+      )
+    );
+
+  return token;
+end;
+$$;
+create or replace function criar_token_reset(email_text text)
+returns text
+language plpgsql
+security definer
+as $$
+declare
+  cliente_id uuid;
+  token text := encode(gen_random_bytes(16), 'hex');
+begin
+  select id into cliente_id from clientes where email = email_text;
+
+  if cliente_id is null then
+    return null;
+  end if;
+
+  insert into password_reset_tokens (token, cliente_id, expires_at)
+  values (token, cliente_id, now() + interval '1 hour');
+
+  return token;
+end;
+$$;
+create or replace function resetar_senha(token_text text, nova_senha text)
+returns boolean
+language plpgsql
+security definer
+as $$
+declare
+  token_record record;
+begin
+  select * into token_record
+  from password_reset_tokens
+  where token = token_text
+    and expires_at > now()
+    and used = false;
+
+  if token_record is null then
+    return false;
+  end if;
+
+  update clientes
+  set senha = nova_senha,
+      atualizado_em = now()
+  where id = token_record.cliente_id;
+
+  update password_reset_tokens
+  set used = true
+  where id = token_record.id;
+
+  return true;
+end;
+$$;

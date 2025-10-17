@@ -525,41 +525,43 @@
       
     }
 
-    /* FOOTER - CORREÇÃO DA LARGURA */
+/* FOOTER AJUSTADO PARA SIDEBAR FIXA */
 footer {
-      width: 100% !important;
-      max-width: 100% !important;
-      margin: 0 !important;
-      padding-top: 20px ;
-    }
+  position: relative;
+  width: calc(100% - 60px); /* espaço igual à largura da sidebar */
+  margin-left: 60px; /* empurra o footer pra direita */
+  background: linear-gradient(to bottom right, #FF5459, #FF8A4B, #FFA500);
+  color: #fff;
+  padding-top: 3rem;
+  padding-bottom: 1.5rem;
+  box-sizing: border-box;
+}
 
+/* Centraliza o conteúdo e garante largura máxima */
+footer > div {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
 
-    footer .max-w-7xl {
-      max-width: 100% !important;
-      width: 100% !important;
-      padding-left: 1rem !important;
-      padding-right: 1rem !important;
-    }
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+  footer {
+    width: 100%; /* ocupa toda a tela */
+    margin-left: 0; /* remove espaço lateral */
+    text-align: left;
+  }
 
-    @media (min-width: 768px) {
-      footer .max-w-7xl {
-        max-width: 80rem !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-      }
-    }
+  footer .grid {
+    grid-template-columns: 1fr !important; /* colunas empilhadas */
+  }
 
-    @media (max-width: 767px) {
-      footer {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-      }
-      
-      footer .max-w-7xl {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-      }
-    }
+  footer a.inline-block {
+    display: inline-block;
+    margin-top: 1rem;
+  }
+}
+
 
     /* MENU LATERAL MOBILE */
     @media (max-width: 767px) {
@@ -673,41 +675,83 @@ footer {
       font-family: "Caveat", cursive;
     }
 
-    .humanize {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 2rem;
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 20;
-    }
+            .hero-section {
+            position: relative;
+            height: 70vh;
+            min-height: 500px;
+            overflow: hidden;
+        }
+        
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+                .hero-section {
+            position: relative;
+            height: 70vh;
+            min-height: 500px;
+            overflow: hidden;
+        }
+        
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .humanize {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 2rem;
+            width: 100%;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 20;
+           
+        }
 
-    .video-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 2000px;
-      max-height: 1000px;
-      margin: auto;
-      overflow: hidden;
-    }
+    
 
-    .video-wrapper video {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
+        .humanize-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .hero-section {
+                height: 80vh;
+            }
+            
+            .humanize {
+                padding: 2.5rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .hero-section {
+                height: 90vh;
+            }
+            
+            .humanize {
+                padding: 3rem;
+            }
+        }
+   
+
 
     .video-section {
       padding: 2rem 1rem;
@@ -1390,33 +1434,40 @@ footer {
     </div>
   </aside>
 
-  <!-- Overlay -->
-  <div id="overlay" class="fixed inset-0 bg-black/50 hidden md:hidden"></div>
+ <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 hidden md:hidden"></div>
 
-  <main class="md:ml-72">
-    <!-- Seção inicial com vídeo -->
-    <section class="video-section">
-      <div class="video-wrapper">
-        <video autoplay muted loop playsinline>
-          <source src="img/video.mp4" type="video/mp4">
-          Seu navegador não suporta vídeos HTML5.
-        </video>
-        <div id="humanize" class= "humanize ">
-          <h2 class="text-white font-authorB  text-xl md:text-3xl mb-6">
-            <span class="text-[#FF9C19]">Humanizamos</span> marcas,<br>
-            <span class="text-[#FF5459]">Potencializamos</span> conexões.
-          </h2>
-          <div class="flex w-full bg-white rounded-2xl p-2 gap-2">
-            <a href="#orçamento"
-              class="flex-1 text-center bg-[#FF5A5F] text-white py-2 rounded-xl font-authorB hover:bg-[#e14b4f] ">Solicite
-              um orçamento</a>
-            <a href="#reunião"
-              class="flex-1 text-center bg-[#FFA500] text-white py-2 rounded-xl font-authorB hover:bg-[#e69500] ">Vamos
-              conversar?</a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <main class="md:ml-72">
+        <!-- Seção inicial com imagem -->
+        <section class="hero-section">
+            <picture>
+                <!-- Imagem para telas pequenas -->
+                <source media="(max-width: 767px)" srcset="https://images.unsplash.com/photo-1558655146-364adaf1fcc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
+                <!-- Imagem para telas médias -->
+                <source media="(min-width: 768px) and (max-width: 1023px)" srcset="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+                <!-- Imagem para telas grandes (padrão) -->
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" 
+                     alt="Imagem de branding e conexões" 
+                     class="hero-image">
+            </picture>
+            
+            <div class="hero-content">
+                <div id="humanize" class="humanize">
+                    <h2 class="text-white font-bold text-xl md:text-3xl mb-6">
+                        <span class="text-[#FF9C19]">Humanizamos</span> marcas,<br>
+                        <span class="text-[#FF5459]">Potencializamos</span> conexões.
+                    </h2>
+                    <div class="flex flex-col md:flex-row w-full rounded-2xl p-2 gap-2">
+                        <a href="#orçamento"
+                           class="flex-1 text-center bg-[#FF5A5F] text-white py-2 rounded-xl font-bold hover:bg-[#e14b4f] transition-colors">Solicite
+                            um orçamento</a>
+                        <a href="#reunião"
+                           class="flex-1 text-center bg-[#FFA500] text-white py-2 rounded-xl font-bold hover:bg-[#e69500] transition-colors">Vamos
+                            conversar?</a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     <!-- Seção Sobre Nós -->
     <section id="sobre" class="flex flex-col md:flex-row w-full min-h-screen">
@@ -2206,11 +2257,11 @@ footer {
                     </a>
                 </div>
                 
-                <!-- Lado direito - Caixa de contato COM A MULHER MAIS ALTA -->
+              
                 <div class="relative rounded-3xl shadow-2xl bg-gradient-to-br from-[#FF5459] via-[#FF8A4B] to-[#FFA500]
                        p-8 sm:p-10 overflow-visible w-full min-h-[500px] flex items-center slide-in-right">
                     
-                    <!-- Mulher ilustração MAIS ALTA -->
+              
                     
                     <div class="flex flex-col w-full relative z-10">
                         <!-- Informações de contato -->
@@ -2280,7 +2331,7 @@ footer {
             <div class="lg:col-span-1">
                 <img src="img/Reduzido vertical_Humanize-8.png" alt="Humanize Logo" class="h-16 mb-4">
                 <p class="text-white/90 text-sm leading-relaxed mb-4">
-                    Transformamos ideias em realidade através de estratégias digitais humanizadas. Sua marca merece uma abordagem única e personalizada.
+                    Transformamos ideias em realidade através de estratégias digitais humanizadas. <br>Sua marca merece uma abordagem única e personalizada.
                 </p>
                 <div class="flex space-x-4">
                     <a href="#" class="bg-white/20 p-2 rounded-full hover:bg-white/30 transition">
@@ -2298,18 +2349,7 @@ footer {
                 </div>
             </div>
 
-            <!-- Coluna 2: Serviços -->
-            <div>
-                <h3 class="font-authorB text-lg mb-4">Nossos Serviços</h3>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#serviços" class="text-white/90 hover:text-white ">Criação de Identidade Visual</a></li>
-                    <li><a href="#serviços" class="text-white/90 hover:text-white transition">Gestão de Redes Sociais</a></li>
-                    <li><a href="#serviços" class="text-white/90 hover:text-white transition">Criação de Conteúdo</a></li>
-                    <li><a href="#serviços" class="text-white/90 hover:text-white transition">Cobertura em Eventos</a></li>
-                    <li><a href="#serviços" class="text-white/90 hover:text-white transition">Marketing Digital</a></li>
-                    <li><a href="#serviços" class="text-white/90 hover:text-white transition">Branding</a></li>
-                </ul>
-            </div>
+         
 
             <!-- Coluna 3: Links Rápidos -->
             <div>
@@ -2361,10 +2401,7 @@ footer {
                 <div class="text-center md:text-left mb-4 md:mb-0">
                     <p class="text-white/80 text-sm">© 2024 Agência Humanize. Todos os direitos reservados.</p>
                 </div>
-                <div class="flex space-x-3 text-sm">
-                    <a href="#" class="text-white/80 hover:text-white transition">Política de Privacidade</a>
-                    <a href="#" class="text-white/80 hover:text-white transition">Termos de Uso</a>
-                </div>
+               
             </div>
         </div>
     </div>
