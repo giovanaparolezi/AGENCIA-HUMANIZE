@@ -31,7 +31,7 @@
   <!-- Header -->
   <header class="bg-[#FF5A5F] text-white p-4">
     <div class="container mx-auto flex justify-between items-center">
-      <img src="Paginas/Logo completo_Humanize-3.png" alt="Logo" class="h-8 md:h-10">
+      <img src="Paginas/Logocompleto_Humanize-3.png" alt="Logo" class="h-8 md:h-10">
       
       <!-- Menu para mobile -->
       <div class="md:hidden">
@@ -52,7 +52,7 @@
     <!-- Menu móvel expandido -->
     <div id="mobileMenu" class="md:hidden hidden mt-4 bg-[#FF5A5F] border-t border-white/20">
       <div class="flex flex-col">
-        <a href="/HUMANIZE - PROJETO FINAL/index.html" class="py-2 px-4 hover:bg-white/20 transition-colors">Início</a>
+        <a href="../index.html" class="py-2 px-4 hover:bg-white/20 transition-colors">Início</a>
         <button id="logoutBtnMobile" class="py-2 px-4 text-left hover:bg-white/20 transition-colors">Sair</button>
       </div>
     </div>
@@ -315,12 +315,12 @@
     // Logout
     logoutBtn.addEventListener('click', function() {
       localStorage.removeItem('usuarioLogado');
-      window.location.href = '/HUMANIZE - PROJETO FINAL/index.html';
+      window.location.href = '../index.html';
     });
     
     logoutBtnMobile.addEventListener('click', function() {
       localStorage.removeItem('usuarioLogado');
-      window.location.href = '/HUMANIZE - PROJETO FINAL/index.html';
+      window.location.href = '../index.html';
     });
 
     // Sistema de notificações em tempo real
