@@ -6,7 +6,6 @@
   <title>Área do Cliente - Humanize</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Animações para notificações */
     @keyframes fade-in {
       from { opacity: 0; transform: translateY(-10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -15,7 +14,6 @@
       animation: fade-in 0.3s ease-out;
     }
     
-    /* Estilo para tabela responsiva */
     @media (max-width: 768px) {
       .table-responsive {
         display: block;
@@ -28,12 +26,10 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
 
-  <!-- Header -->
   <header class="bg-[#FF5A5F] text-white p-4">
     <div class="container mx-auto flex justify-between items-center">
       <img src="Logocompleto_Humanize-3.png" alt="Logo" class="h-8 md:h-10">
       
-      <!-- Menu para mobile -->
       <div class="md:hidden">
         <button id="mobileMenuBtn" class="p-2 rounded-md hover:bg-white/20">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,14 +38,12 @@
         </button>
       </div>
       
-      <!-- Menu para desktop -->
       <nav class="hidden md:flex gap-4">
         <a href="../index.html" class="hover:bg-white/20 px-3 py-1 rounded transition-colors">Início</a>
         <button id="logoutBtn" class="hover:bg-white/20 px-3 py-1 rounded transition-colors">Sair</button>
       </nav>
     </div>
     
-    <!-- Menu móvel expandido -->
     <div id="mobileMenu" class="md:hidden hidden mt-4 bg-[#FF5A5F] border-t border-white/20">
       <div class="flex flex-col">
         <a href="../index.html" class="py-2 px-4 hover:bg-white/20 transition-colors">Início</a>
@@ -61,15 +55,12 @@
   <main class="container mx-auto p-4 md:p-6">
     <h1 class="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-[#FF5459]">Minha Área</h1>
 
-    <!-- Informações do Cliente -->
     <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 md:mb-8">
       <h2 class="text-lg md:text-xl font-semibold mb-3 md:mb-4">Meus Dados</h2>
       <div id="clienteInfo" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-        <!-- Os dados serão preenchidos via JavaScript -->
       </div>
     </div>
 
-    <!-- Meus Pedidos -->
     <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 md:mb-8">
       <h2 class="text-lg md:text-xl font-semibold mb-3 md:mb-4">Meus Pedidos</h2>
       <div class="table-responsive">
@@ -90,12 +81,31 @@
       </div>
     </div>
 
-    <!-- Solicitar Novo Serviço -->
     <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mt-6 md:mt-8">
       <h2 class="text-lg md:text-xl font-semibold mb-3 md:mb-4">Solicitar Novo Serviço</h2>
       <div class="flex flex-col md:flex-row gap-2">
         <input type="text" id="novoServicoInput" placeholder="Descreva o serviço desejado" class="flex-1 p-2 border rounded">
         <button id="solicitarServicoBtn" class="px-4 py-2 bg-[#FF5459] text-white rounded hover:bg-[#e04a50] transition-colors mt-2 md:mt-0">Solicitar</button>
+      </div>
+    </div>
+
+    <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mt-6">
+      <h2 class="text-lg md:text-xl font-semibold mb-4">Mensagens do Administrador</h2>
+      <div id="mensagensAdmin" class="space-y-3 mb-4 max-h-80 overflow-y-auto">
+      </div>
+      <div class="flex gap-2">
+        <input 
+          type="text" 
+          id="respostaMensagemInput" 
+          placeholder="Digite sua resposta..."
+          class="flex-1 p-2 border rounded"
+        >
+        <button 
+          id="enviarRespostaBtn" 
+          class="px-4 py-2 bg-[#FF5459] text-white rounded hover:bg-[#e04a50] transition-colors"
+        >
+          Responder
+        </button>
       </div>
     </div>
   </main>
@@ -114,15 +124,16 @@
     const logoutBtnMobile = document.getElementById('logoutBtnMobile');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
+    const mensagensAdmin = document.getElementById('mensagensAdmin');
+    const respostaMensagemInput = document.getElementById('respostaMensagemInput');
+    const enviarRespostaBtn = document.getElementById('enviarRespostaBtn');
 
     let clienteAtual = null;
     
-    // Menu móvel
     mobileMenuBtn.addEventListener('click', () => {
       mobileMenu.classList.toggle('hidden');
     });
     
-    // Verificar se está logado ao carregar a página do cliente
     document.addEventListener('DOMContentLoaded', function() {
         function verificarLogin() {
             const usuarioSalvo = localStorage.getItem('usuarioLogado');
@@ -143,16 +154,13 @@
             return;
         }
         
-        // Se chegou aqui, usuário está logado - carregar conteúdo da área do cliente
         console.log('Bem-vindo à área do cliente,', usuario.nome);
     });
     
-    // Verificar se o usuário está logado
     function verificarEAutenticar() {
       const usuarioSalvo = localStorage.getItem('usuarioLogado');
       
       if (!usuarioSalvo) {
-        // Não está logado, redirecionar para login
         window.location.href = 'login.html';
         return null;
       }
@@ -160,7 +168,6 @@
       const usuario = JSON.parse(usuarioSalvo);
       
       if (usuario.tipo === 'admin') {
-        // Admin tentando acessar área do cliente? Redirecionar para dashboard
         window.location.href = 'admin.html';
         return null;
       }
@@ -168,13 +175,11 @@
       return usuario;
     }
 
-    // Carregar dados do cliente
     async function carregarDadosCliente() {
       clienteAtual = verificarEAutenticar();
       
       if (!clienteAtual) return;
 
-      // Buscar dados completos do cliente do banco (para garantir que temos os dados mais recentes)
       const { data: clienteCompleto, error } = await client
         .from('clientes')
         .select('*, nichos(nome)')
@@ -183,13 +188,11 @@
 
       if (error) {
         console.error('Erro ao buscar dados do cliente:', error);
-        // Usar dados salvos no localStorage como fallback
         clienteCompleto = clienteAtual;
       } else {
         clienteAtual = clienteCompleto;
       }
 
-      // Preencher informações do cliente
       clienteInfo.innerHTML = `
         <div>
           <p class="mb-2"><strong>Nome:</strong> ${clienteAtual.nome}</p>
@@ -204,13 +207,11 @@
       `;
 
       await carregarMeusPedidos();
-      // Inicializar sistema de notificações em tempo real
+      await carregarMensagensAdmin();
       inicializarNotificacoesTempoReal();
-      // Iniciar verificação periódica
       iniciarVerificacaoPeriodica();
     }
 
-    // Carregar pedidos do cliente
     async function carregarMeusPedidos() {
       if (!clienteAtual) return;
 
@@ -255,7 +256,6 @@
       });
     }
 
-    // Solicitar novo serviço
     solicitarServicoBtn.addEventListener('click', async () => {
       if (!clienteAtual) return;
 
@@ -266,7 +266,6 @@
       }
 
       try {
-        // Buscar serviço pelo nome ou criar novo
         let { data: servico } = await client
           .from('servicos')
           .select('id')
@@ -274,7 +273,6 @@
           .single();
 
         if (!servico) {
-          // Criar serviço se não existir
           const { data: novoServico } = await client
             .from('servicos')
             .insert({ nome: servicoDescricao })
@@ -283,7 +281,6 @@
           servico = novoServico;
         }
 
-        // Criar pedido
         const { data: pedido } = await client
           .from('pedidos')
           .insert({ 
@@ -293,7 +290,6 @@
           .select()
           .single();
 
-        // Adicionar produto ao pedido
         await client
           .from('pedido_produtos')
           .insert({
@@ -312,7 +308,6 @@
       }
     });
 
-    // Logout
     logoutBtn.addEventListener('click', function() {
       localStorage.removeItem('usuarioLogado');
       window.location.href = '../index.html';
@@ -323,38 +318,157 @@
       window.location.href = '../index.html';
     });
 
-    // Sistema de notificações em tempo real
+    async function carregarMensagensAdmin() {
+      if (!clienteAtual) return;
+      try {
+        const { data: mensagens, error } = await client
+          .from('mensagens')
+          .select('*')
+          .eq('cliente_id', clienteAtual.id)
+          .order('criado_em', { ascending: true });
+        if (error) throw error;
+        mensagensAdmin.innerHTML = '';
+        if (mensagens.length === 0) {
+          mensagensAdmin.innerHTML = '<div class="text-center text-gray-500 py-4">Nenhuma mensagem ainda</div>';
+          return;
+        }
+        mensagens.forEach(msg => {
+          const msgDiv = document.createElement('div');
+          msgDiv.className = `p-3 rounded-lg ${msg.enviado_por === 'admin' ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50 border border-gray-200'}`;
+          msgDiv.innerHTML = `
+            <div class="flex justify-between items-start mb-1">
+              <span class="text-sm font-medium ${msg.enviado_por === 'admin' ? 'text-blue-700' : 'text-gray-700'}">
+                ${msg.enviado_por === 'admin' ? ' Agência Humanize' : 'Você'}
+              </span>
+              <span class="text-xs text-gray-500">
+                ${new Date(msg.criado_em).toLocaleString('pt-BR')}
+              </span>
+            </div>
+            <div class="text-sm text-gray-800">${msg.mensagem}</div>
+          `;
+          mensagensAdmin.appendChild(msgDiv);
+        });
+        mensagensAdmin.scrollTop = mensagensAdmin.scrollHeight;
+        await marcarMensagensComoLidas();
+      } catch (error) {
+        console.error('Erro ao carregar mensagens:', error);
+      }
+    }
+
+    async function marcarMensagensComoLidas() {
+      if (!clienteAtual) return;
+      try {
+        const { error } = await client
+          .from('mensagens')
+          .update({ lida: true })
+          .eq('cliente_id', clienteAtual.id)
+          .eq('enviado_por', 'admin')
+          .eq('lida', false);
+        if (error) throw error;
+      } catch (error) {
+        console.error('Erro ao marcar mensagens como lidas:', error);
+      }
+    }
+
+    enviarRespostaBtn.addEventListener('click', async () => {
+      const mensagem = respostaMensagemInput.value.trim();
+      if (!mensagem) {
+        alert('Por favor, digite uma mensagem');
+        return;
+      }
+      if (!clienteAtual) {
+        alert('Erro: Cliente não identificado');
+        return;
+      }
+      try {
+        const { error } = await client
+          .from('mensagens')
+          .insert({
+            cliente_id: clienteAtual.id,
+            admin_id: 'admin',
+            mensagem: mensagem,
+            enviado_por: 'cliente',
+            lida: false
+          });
+        if (error) throw error;
+        respostaMensagemInput.value = '';
+        await carregarMensagensAdmin();
+        mostrarNotificacaoMensagem();
+      } catch (error) {
+        console.error('Erro ao enviar resposta:', error);
+        alert('Erro ao enviar mensagem: ' + error.message);
+      }
+    });
+
+    function mostrarNotificacaoMensagem() {
+      const notificationDiv = document.createElement('div');
+      notificationDiv.className = 'fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 max-w-xs md:max-w-md animate-fade-in';
+      notificationDiv.innerHTML = `
+        <div class="flex items-start">
+          <div class="flex-shrink-0">✅</div>
+          <div class="ml-3 flex-1">
+            <p class="text-sm font-medium">Resposta enviada com sucesso!</p>
+            <p class="text-xs opacity-80 mt-1">O administrador será notificado.</p>
+          </div>
+          <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-lg hover:text-gray-200">×</button>
+        </div>
+      `;
+      document.body.appendChild(notificationDiv);
+      setTimeout(() => {
+        if (notificationDiv.parentElement) {
+          notificationDiv.remove();
+        }
+      }, 4000);
+    }
+
+    function mostrarNotificacaoMensagemNova(mensagem) {
+      if (mensagem.enviado_por === 'admin') {
+        const notificationDiv = document.createElement('div');
+        notificationDiv.className = 'fixed top-4 right-4 bg-blue-500 text-white p-4 rounded-lg shadow-lg z-50 max-w-xs md:max-w-md animate-fade-in';
+        notificationDiv.innerHTML = `
+          <div class="flex items-start">
+            <div class="flex-shrink-0">✉️</div>
+            <div class="ml-3 flex-1">
+              <p class="text-sm font-medium">Nova mensagem do administrador!</p>
+              <p class="text-xs opacity-80 mt-1">${mensagem.mensagem.substring(0, 50)}${mensagem.mensagem.length > 50 ? '...' : ''}</p>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-lg hover:text-gray-200">×</button>
+          </div>
+        `;
+        document.body.appendChild(notificationDiv);
+        setTimeout(() => {
+          if (notificationDiv.parentElement) {
+            notificationDiv.remove();
+          }
+        }, 6000);
+      }
+    }
+
     function inicializarNotificacoesTempoReal() {
       console.log('Iniciando sistema de notificações...');
-      
-      // Escutar por novas notificações
       const notificacoesSubscription = client
         .from('notificacoes')
         .on('INSERT', (payload) => {
           console.log('Nova notificação recebida:', payload);
           if (payload.new.cliente_id === clienteAtual.id) {
             mostrarNotificacao(payload.new);
-            carregarMeusPedidos(); // Atualizar lista de pedidos
+            carregarMeusPedidos();
           }
         })
         .subscribe();
-
-      // Escutar por atualizações nos pedidos
-      const pedidosSubscription = client
-        .from('pedidos')
-        .on('UPDATE', (payload) => {
-          console.log('Pedido atualizado:', payload);
+      const mensagensSubscription = client
+        .from('mensagens')
+        .on('INSERT', (payload) => {
+          console.log('Nova mensagem recebida:', payload);
           if (payload.new.cliente_id === clienteAtual.id) {
-            mostrarNotificacaoStatus(payload.new);
-            carregarMeusPedidos(); // Atualizar lista
+            carregarMensagensAdmin();
+            mostrarNotificacaoMensagemNova(payload.new);
           }
         })
         .subscribe();
-
-      return { notificacoesSubscription, pedidosSubscription };
+      return { notificacoesSubscription, mensagensSubscription };
     }
 
-    // Função para mostrar notificação
     function mostrarNotificacao(notificacao) {
       const notificationDiv = document.createElement('div');
       notificationDiv.className = 'fixed top-4 right-4 bg-blue-500 text-white p-4 rounded-lg shadow-lg z-50 max-w-xs md:max-w-md animate-fade-in';
@@ -368,10 +482,7 @@
           <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-lg hover:text-gray-200">×</button>
         </div>
       `;
-      
       document.body.appendChild(notificationDiv);
-      
-      // Auto-remover após 8 segundos
       setTimeout(() => {
         if (notificationDiv.parentElement) {
           notificationDiv.remove();
@@ -379,14 +490,12 @@
       }, 8000);
     }
 
-    // Função para mostrar notificação de status
     function mostrarNotificacaoStatus(pedido) {
       const statusText = {
         'pendente': '⏳ Pendente',
         'em andamento': '🚀 Em andamento', 
         'concluido': '✅ Concluído'
       };
-      
       const notificationDiv = document.createElement('div');
       notificationDiv.className = 'fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 max-w-xs md:max-w-md animate-fade-in';
       notificationDiv.innerHTML = `
@@ -400,9 +509,7 @@
           <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-lg hover:text-gray-200">×</button>
         </div>
       `;
-      
       document.body.appendChild(notificationDiv);
-      
       setTimeout(() => {
         if (notificationDiv.parentElement) {
           notificationDiv.remove();
@@ -410,16 +517,14 @@
       }, 8000);
     }
 
-    // Verificação periódica de atualizações
     function iniciarVerificacaoPeriodica() {
       setInterval(async () => {
         if (clienteAtual) {
           await carregarMeusPedidos();
         }
-      }, 30000); // 30 segundos
+      }, 30000);
     }
 
-    // Inicializar
     carregarDadosCliente();
   </script>
 </body>
