@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Humanize — Agência</title>
+  <style>
+    :root{
+      --bg:#fad6ea;
+      --accent:#ff4fa7;
+      --dark:#111217;
+      --glass: rgba(255,255,255,0.75);
+      --card-shadow: 0 20px 50px rgba(17,18,23,0.3);
+      --soft-shadow: 0 12px 30px rgba(17,18,23,0.15);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:var(--dark);background:linear-gradient(180deg,#fff 0%, #fff7fb 20%, var(--bg) 100%);}
+
+    /* layout geral */
+    .wrap{min-height:100vh;overflow-x:hidden}
+
+    /* "frame" do site que fica fixo na tela e vai "desdobrando" conforme scroll (como no vídeo que vc mandou) */
+    .viewport {
+      position:relative;
+      width:760px;
+      max-width:92vw;
+      margin:60px auto;
+      perspective:1600px;
+      height:calc(100vh - 120px);
+    }
+
+    .browser {
+      position:sticky;
+      top:40px;
+      height:calc(100vh - 80px);
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+      box-shadow: 0 30px 80px rgba(17,18,23,0.2);
+      overflow:visible;
+      transform-origin: center top;
+    }
+
+    /* mock barra de navegador */
+    .nav-bar{
+      height:54px;
+      display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid rgba(0,0,0,0.06);
+    }
+    .dots{display:flex;gap:8px}
+    .dot{width:10px;height:10px;border-radius:50%}
+    .dot.red{background:#ff5f56}
+    .dot.yellow{background:#ffbd2e}
+    .dot.green{background:#27c93f}
+    .url{flex:1;background:linear-gradient(90deg,#fff,#faf0f6);height:28px;border-radius:8px;display:flex;align-items:center;padding:0 12px;color:#777;font-size:13px}
+
+    /* content column inside "browser" */
+    .stage{
+      height:calc(100% - 54px);
+      overflow:hidden;
+      position:relative;
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      border-radius:0 0 18px 18px;
+    }
+
+    /* cada "painel" grande que vai surgindo conforme se scrola */
+    .panel {
+      width:100%;
+      height:100%;
+      position:absolute;
+      left:0;top:0;
+      display:flex;align-items:center;justify-content:center;
+      pointer-events:none;
+      transform-origin:center top;
+    }
+
+    .panel-inner{
+      width:86%;
+      max-width:720px;
+      pointer-events:auto;
+      text-align:center;
+    }
+
+    h1{font-size:34px;margin:12px 0}
+    p.lead{font-size:16px;color:#3b3b3b;margin:10px 0 24px}
+
+    /* To-do cards 3D */
+    .todo-grid{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+    .todo{width:220px;background:linear-gradient(180deg,#fff,#fff7fb);border-radius:18px;padding:18px;box-shadow:var(--card-shadow);transform:translateZ(0);transition:transform .45s cubic-bezier(.2,.9,.2,1), box-shadow .45s;}
+    .todo:hover{transform:translateY(-14px) rotateX(6deg) rotateY(6deg);box-shadow:0 35px 80px rgba(17,18,23,0.35)}
+    .todo h3{margin:0 0 8px;font-size:16px}
+    .todo p{margin:0;font-size:13px;color:#666}
+
+    /* phone 3D com imagem do instagram "saindo" */
+    .phone-wrap{display:flex;flex-direction:column;align-items:center;gap:18px}
+    .phone-3d{
+      width:220px;height:460px;border-radius:36px;background:#000;box-shadow:var(--card-shadow);position:relative;overflow:hidden;transform:translateZ(0) rotateX(14deg);
+    }
+    .screen{
+      position:absolute;inset:12px;border-radius:26px;overflow:hidden;background:linear-gradient(180deg,#fff,#f8f5f8);
+    }
+    .insta-card{width:100%;height:100%;display:flex;flex-direction:column}
+    .insta-top{height:52px;background:linear-gradient(90deg,#fff,#fff7fb);display:flex;align-items:center;padding:8px 12px;gap:8px}
+    .insta-top .avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(90deg,var(--accent),#ff8ac9)}
+    .insta-feed{flex:1;display:flex;align-items:center;justify-content:center}
+    .insta-thumb{width:80%;height:60%;border-radius:14px;background-image:linear-gradient(135deg,#ffd3ee,#ffe6f5);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--dark)}
+
+    .cta{display:inline-block;padding:12px 20px;border-radius:12px;background:var(--accent);color:white;text-decoration:none;font-weight:600;box-shadow:var(--soft-shadow)}
+
+    /* page content below the browser frame - to allow natural scrolling space */
+    .spacer{height:200vh}
+
+    /* tiny helper visual */
+    .badge{display:inline-block;padding:6px 10px;background:var(--glass);border-radius:999px;font-size:12px}
+
+    /* responsive */
+    @media (max-width:800px){
+      .viewport{margin:20px auto;height:70vh}
+      .browser{top:20px}
+      h1{font-size:22px}
+      .todo{width:46%}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="viewport">
+      <div class="browser" id="browser">
+        <div class="nav-bar">
+          <div class="dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+          <div class="url">humanize.ag • human-first creative</div>
+        </div>
+
+        <div class="stage">
+          <!-- painel 1: hero -->
+          <section class="panel" id="panel-1" style="z-index:6">
+            <div class="panel-inner">
+              <span class="badge">Agência Humanize</span>
+              <h1>Estratégia humana. Resultados reais.</h1>
+              <p class="lead">Acreditamos que por trás de cada clique existe uma pessoa. Criamos marcas que conversam, emocionam e convertem.</p>
+              <div style="display:flex;gap:12px;justify-content:center">
+                <a class="cta" href="#">Trabalhe conosco</a>
+                <a class="cta" style="background:transparent;color:var(--dark);box-shadow:none;border:1px solid rgba(0,0,0,0.06)" href="#">Ver cases</a>
+              </div>
+            </div>
+          </section>
+
+          <!-- painel 2: to-do cards (3D) -->
+          <section class="panel" id="panel-2" style="z-index:5;transform:translateY(100%) scale(.98)">
+            <div class="panel-inner">
+              <h1>O que fazemos</h1>
+              <p class="lead">Tudo planejado como uma checklist humana — simples, ágil e focada em impacto.</p>
+
+              <div class="todo-grid" aria-hidden="false">
+                <div class="todo"><h3>Pesquisa & Insight</h3><p>Entendemos quem é sua pessoa e como conversar com ela.</p></div>
+                <div class="todo"><h3>Conteúdo com propósito</h3><p>Roteiros, carrosséis, vídeos e copy que contam histórias.</p></div>
+                <div class="todo"><h3>Campanhas que conectam</h3><p>Paid + orgânico trabalhando juntos para relação longa.</p></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- painel 3: phone 3D com insta saindo -->
+          <section class="panel" id="panel-3" style="z-index:4;transform:translateY(200%) scale(.96)">
+            <div class="panel-inner">
+              <h1>Veja nosso Instagram</h1>
+              <p class="lead">Bastidores, microcases e reels que explicam nossa forma de pensar.</p>
+
+              <div class="phone-wrap">
+                <div class="phone-3d" id="phone">
+                  <div class="screen">
+                    <div class="insta-card">
+                      <div class="insta-top"><div class="avatar"></div><div style="flex:1;text-align:left;font-weight:600">@humanize.ag</div></div>
+                      <div class="insta-feed"><div class="insta-thumb">Reels • Cases • Bastidores</div></div>
+                    </div>
+                  </div>
+                </div>
+
+                <a class="cta" id="openInsta" href="#">Abrir Instagram</a>
+              </div>
+
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+
+  <script>
+    // Script para reproduzir o efeito do vídeo: conforme o usuário desce, cada painel aparece com tilt 3D
+    (function(){
+      const browser = document.getElementById('browser');
+      const panels = [
+        document.getElementById('panel-1'),
+        document.getElementById('panel-2'),
+        document.getElementById('panel-3')
+      ];
+
+      // distância total que o user pode scrollar dentro da viewport (vamos usar o body scroll)
+      const totalPanels = panels.length;
+
+      function updatePanels(){
+        // calcula o progresso de scroll relativo à viewport centralizada na tela
+        const rect = browser.getBoundingClientRect();
+        const vh = window.innerHeight;
+        // quanto o topo do browser está da parte superior da viewport (0..vh)
+        const top = Math.max(0, Math.min(vh, rect.top));
+        // vamos usar a posição do scroll da página para definir qual painel mostrar
+        const pageProgress = window.scrollY / (document.body.scrollHeight - window.innerHeight || 1);
+
+        panels.forEach((p,i)=>{
+          // target translateY: cada painel fica deslocado por 100% * i inicialmente
+          const base = i * 100;
+          // combinamos com pageProgress para mover os painéis
+          const offset = (pageProgress * totalPanels * 100) - base;
+
+          // transform mais suave
+          const y = Math.max(-110, Math.min(110, offset));
+          const scale = 1 - Math.min(0.12, Math.abs(offset) / 1200);
+          const rot = Math.max(-18, Math.min(18, (offset/6)));
+
+          p.style.transform = `translateY(${y}%) scale(${scale}) rotateX(${rot}deg)`;
+          p.style.opacity = `${Math.max(0.14, 1 - Math.abs(offset)/220)}`;
+        });
+      }
+
+      // otimização: raf loop
+      let ticking = false;
+      window.addEventListener('scroll',()=>{
+        if(!ticking){
+          window.requestAnimationFrame(()=>{ updatePanels(); ticking=false });
+          ticking = true;
+        }
+      },{passive:true});
+
+      // inicializa
+      updatePanels();
+
+      // interatividade do telefone (animação simples que "projeta" a imagem pra fora)
+      const phone = document.getElementById('phone');
+      phone.addEventListener('mouseenter',()=>{
+        phone.style.transform = 'translateZ(30px) rotateX(6deg)';
+      });
+      phone.addEventListener('mouseleave',()=>{
+        phone.style.transform = 'translateZ(0) rotateX(14deg)';
+      });
+
+      // abrir instagram (só exemplo - substitua pela sua conta)
+      document.getElementById('openInsta').addEventListener('click',(e)=>{
+        e.preventDefault();
+        window.open('https://www.instagram.com','_blank');
+      });
+
+    })();
+  </script>
+</body>
+</html>
