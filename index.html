@@ -3123,12 +3123,24 @@ footer > div {
     };
 
 
-    function openModal(client) {
+// Variável global para armazenar a posição do scroll
+let scrollPosition = 0;
+
+function openModal(client) {
     console.log('🎯 Abrindo modal para:', client);
+    
+    // Salva a posição atual do scroll ANTES de abrir o modal
+    scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
     
     const modal = document.getElementById('modal');
     
-    // Remover a classe hidden para mostrar o modal
+    // Aplica os estilos para travar o scroll
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollPosition}px`;
+    document.body.style.width = '100%';
+    
+    // Remove a classe hidden para mostrar o modal
     modal.classList.remove('hidden');
     
     // Adicionar classe ao body para prevenir scroll
@@ -3160,13 +3172,22 @@ footer > div {
     }, 100);
 }
 
-   function closeModal() {
+function closeModal() {
     console.log('🔒 Fechando modal');
     
     const modal = document.getElementById('modal');
     modal.classList.add('hidden');
     document.body.classList.remove('modal-open');
-
+    
+    // Restaura os estilos do body
+    document.body.style.removeProperty('overflow');
+    document.body.style.removeProperty('position');
+    document.body.style.removeProperty('top');
+    document.body.style.removeProperty('width');
+    
+    // Restaura a posição do scroll
+    window.scrollTo(0, scrollPosition);
+    
     // Pausar vídeos
     const videos = document.querySelectorAll('video');
     videos.forEach(video => {
@@ -3174,23 +3195,6 @@ footer > div {
         video.currentTime = 0;
     });
 }
-        
-
-        
-  
-
-    document.addEventListener('click', (e) => {
-        if (e.target.id === 'modal') {
-            closeModal();
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeModal();
-        }
-    });
-
     // ========== MOBILE MENU FUNCTIONALITY ==========
     const menuBtn = document.getElementById('menu-btn');
     const closeBtn = document.getElementById('close-btn');
@@ -3514,6 +3518,7 @@ _Agendamento realizado via site - AGUARDE A CONFIRMAÇÃO_
         }
     }, 300);
 }
+
 
 
   </script>
