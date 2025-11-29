@@ -158,6 +158,79 @@
       }
     }
 
+/* RESPONSIVIDADE - ESCONDER IMAGENS NO MOBILE */
+    @media (max-width: 1024px) {
+      .icon {
+        width: 100px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .title {
+        font-size: 48px;
+      }
+      
+      .icon {
+        width: 80px;
+      }
+      
+      .icon.left {
+        left: 5%;
+      }
+      
+      .icon.right {
+        right: 5%;
+      }
+      
+      .hero::after {
+        height: 50px;
+      }
+      
+   
+    }
+
+ /* ESCONDER IMAGENS EM TELAS PEQUENAS (mobile) */
+    @media (max-width: 640px) {
+      .icon {
+        display: none !important; /* Remove completamente as imagens */
+      }
+      
+      .title {
+        font-size: 42px;
+        padding: 0 20px; /* Adiciona espaçamento lateral */
+      }
+      
+      .line {
+        width: 120px;
+        margin-bottom: 40px; /* Mais espaço sem as imagens */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .title {
+        font-size: 36px;
+      }
+      
+      .line {
+        width: 100px;
+        height: 3px;
+      }
+    }
+
+    /* Para telas muito pequenas (celulares menores) */
+    @media (max-width: 375px) {
+      .title {
+        font-size: 32px;
+      }
+      
+      .line {
+        width: 80px;
+      }
+    }
+
+
+
+
 
 
 @font-face {
@@ -1558,10 +1631,10 @@ footer > div {
 
 </section>
 
-    <main class="md:ml-72">
-<div class="hero" id="hero">
-        <div class="line"></div>
+    <main class="md:ml-72"><div class="hero" id="hero">
+    <div class="line"></div>
 
+    <!-- Imagens que serão escondidas no mobile -->
     <img
       src="Ícone alvo_Humanize-30.png"
       class="icon left"
@@ -1576,11 +1649,10 @@ footer > div {
     />
 
     <div class="title" id="text">
-      <span>Agência Humanize</span>
-      
+      <span>Agência</span>
+      <span>Humanize</span>
     </div>
   </div>
-
 
 
     <!-- Seção Sobre Nós -->
