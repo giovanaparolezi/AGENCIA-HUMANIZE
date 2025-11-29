@@ -10,19 +10,153 @@
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet">
   
 
 
-  <style>
+  <style>      /* HERO SECTION CORRIGIDA */
+    .hero {
+       font-family: 'Poppins';
+      margin: 0;
+      height: 100vh;
+      font-weight: 300;
+      
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #fff5ec;
+      background:
+        radial-gradient(
+          circle at center bottom,
+          rgba(255, 120, 70, 0.75),
+          rgba(255, 100, 50, 0.55) 40%,
+          transparent 60%
+        );
+      position: relative;
+      opacity: 0;
+      animation: pageFadeIn 1s ease forwards;
+    }
 
+    @keyframes pageFadeIn {
+      to { opacity: 1; }
+    }
 
+    .line {
+      width: 150px;
+      height: 4px;
+      background: #ff5b5b;
+      margin: 0 auto 30px auto;
+      border-radius: 20px;
+      transform: translateZ(30px);
+      transition: transform 0.2s ease;
+    }
 
+    .title {
+      font-size: 64px;
+      font-weight: 700;
+     color: #302626;
+      line-height: 1.1;
+      text-align: center;
+      opacity: 1;
+      transform: translateZ(60px) translateY(0);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
 
+    /* Palavras em linhas separadas */
+    .title span {
+      display: block;
+    }
 
+    .icon {
+      width: 140px;
+      position: absolute;
+      transition: transform 0.3s ease;
+      filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.15));
+      will-change: transform;
+    }
 
+    .icon.left {
+      left: 10%;
+      top: 35%;
+      transform: translateY(-50%);
+      animation: floatLeft 4s ease-in-out infinite;
+    }
 
+    .icon.right {
+      right: 5%;
+      top: 45%;
+      transform: translateY(-50%);
+      animation: floatRight 4.5s ease-in-out infinite;
+    }
 
+    @keyframes floatLeft {
+      0%, 100% {
+        transform: translateY(-50%) translateX(0) translateY(0);
+      }
+      50% {
+        transform: translateY(-50%) translateX(5px) translateY(5px);
+      }
+    }
 
+    @keyframes floatRight {
+      0%, 100% {
+        transform: translateY(-50%) translateX(0) translateY(0);
+      }
+      50% {
+        transform: translateY(-50%) translateX(-5px) translateY(-5px);
+      }
+    }
+
+    /* SEÇÃO SEGUINTE COM TRANSITION SUAVE */
+    .next-section {
+      padding: 100px 20px;
+      background: #fff5ec;
+      position: relative;
+      z-index: 10;
+      /* Transição suave do blur */
+      backdrop-filter: blur(0px);
+      transition: backdrop-filter 1.5s ease;
+    }
+
+    .next-section.active {
+      backdrop-filter: blur(10px);
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .title {
+        font-size: 48px;
+      }
+      
+      .icon.left {
+        left: 10%;
+      }
+      
+      .icon.right {
+        right: 10%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .title {
+        font-size: 36px;
+      }
+      
+      .icon {
+        width: 40px;
+      }
+      
+      .icon.left {
+        left: 5%;
+      }
+      
+      .icon.right {
+        right: 5%;
+      }
+    }
 
 
 
@@ -39,11 +173,11 @@
   font-display: swap;
 }
 .font-authorM {
-  font-family: 'Author M', sans-serif;
+  font-family: 'Author M';
 }
 
 .font-authorB {
-  font-family: 'Author B', sans-serif;
+  font-family: 'Author B';
 }
 #serviços{
   font-family: 'Author M';
@@ -90,6 +224,7 @@
       max-height: 90vh;
       width: auto;
       background: white;
+      color: var(--dark);
       border-radius: 12px;
       overflow: hidden;
       display: flex;
@@ -119,7 +254,7 @@
       z-index: auto !important;
     }
 
-    /* Restante do CSS permanece igual... */
+    
 
     /* From Uiverse.io by nihad-abbasov */
     .ui-switch {
@@ -713,33 +848,6 @@ footer > div {
       font-family: "Caveat", cursive;
     }
 
-            .hero-section {
-            position: relative;
-            height: 70vh;
-            min-height: 500px;
-            overflow: hidden;
-        }
-        
-        .hero-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: opacity 0.5s ease-in-out;
-        }
-        
-                .hero-section {
-            position: relative;
-            height: 70vh;
-            min-height: 500px;
-            overflow: hidden;
-        }
-        
-        .hero-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: opacity 0.5s ease-in-out;
-        }
         
         .humanize {
             display: flex;
@@ -769,35 +877,7 @@ footer > div {
             margin: 0 auto;
         }
 
-        @media (min-width: 768px) {
-            .hero-section {
-                height: 80vh;
-            }
-            
-            .humanize {
-                padding: 2.5rem;
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .hero-section {
-                height: 90vh;
-            }
-            
-            .humanize {
-                padding: 3rem;
-            }
-        }
-   
-
-
-    .video-section {
-      padding: 2rem 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
+       
 
     main {
       transition: margin-left 0.3s ease;
@@ -1373,6 +1453,7 @@ footer > div {
     }
 
     
+
   </style>
 </head>
 
@@ -1474,39 +1555,33 @@ footer > div {
   </aside>
 
  <!-- Overlay -->
-    <div id="overlay" class="fixed inset-0 bg-black/50 hidden md:hidden"></div>
+
+</section>
 
     <main class="md:ml-72">
-        <!-- Seção inicial com imagem -->
-        <section class="hero-section">
-            <picture>
-                <!-- Imagem para telas pequenas -->
-                <source media="(max-width: 767px)" srcset="https://images.unsplash.com/photo-1558655146-364adaf1fcc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
-                <!-- Imagem para telas médias -->
-                <source media="(min-width: 768px) and (max-width: 1023px)" srcset="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
-                <!-- Imagem para telas grandes (padrão) -->
-                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" 
-                     alt="Imagem de branding e conexões" 
-                     class="hero-image">
-            </picture>
-            
-            <div class="hero-content">
-                <div id="humanize" class="humanize">
-                    <h2 class="text-white font-bold text-xl md:text-3xl mb-6">
-                        <span class="text-[#FF9C19]">Humanizamos</span> marcas,<br>
-                        <span class="text-[#FF5459]">Potencializamos</span> conexões.
-                    </h2>
-                    <div class="flex flex-col md:flex-row w-full rounded-2xl p-2 gap-2">
-                        <a href="#orçamento"
-                           class="flex-1 text-center bg-[#FF5A5F] text-white py-2 rounded-xl font-bold hover:bg-[#e14b4f] transition-colors">Solicite
-                            um orçamento</a>
-                        <a href="#reunião"
-                           class="flex-1 text-center bg-[#FFA500] text-white py-2 rounded-xl font-bold hover:bg-[#e69500] transition-colors">Vamos
-                            conversar?</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+<div class="hero" id="hero">
+        <div class="line"></div>
+
+    <img
+      src="Ícone alvo_Humanize-30.png"
+      class="icon left"
+      id="iconLeft"
+      alt="ícone esquerdo"
+    />
+    <img
+      src="Símbolo_Humanize-27.png"
+      class="icon right"
+      id="iconRight"
+      alt="ícone direito"
+    />
+
+    <div class="title" id="text">
+      <span>Agência Humanize</span>
+      
+    </div>
+  </div>
+
+
 
     <!-- Seção Sobre Nós -->
     <section id="sobre" class="flex flex-col md:flex-row w-full min-h-screen">
@@ -1836,8 +1911,8 @@ footer > div {
       </div>
 <div
         class="absolute bottom-0 left-0 w-full overflow-hidden h-[80px] md:h-[100px] bg-[#FFA726] z-10 flex items-center">
-        <div class="flex animate-marquee whitespace-nowrap font-authorB text-white text-lg md:text-2xl px-2 md:px-4">
-          <span class="mx-4 md:mx-8">
+        <div class="flex  whitespace-nowrap font-authorB text-white text-lg md:text-2xl px-2 md:px-4">
+          <span class="mx-4 md:mx-8 fade-in" >
              <span class="font-bold">+DE 50 CLIENTES ATENDIDOS EM</span> MONTE ALTO , TAQUARITINGA , JABOTICABAL , PIRANGI , CRAVINHOS , BARRINHA , E RIBEIRÃO PRETO</span> </span>
           
         </div>
@@ -2016,13 +2091,16 @@ footer > div {
   </div>
 </section>
 
-    <!-- Seção Reunião -->
+
+
+
+<!-- Seção Reunião -->
 <section id="reunião" class="relative py-16 md:py-24 fade-in">
   <div class="flex items-center justify-center">
     <div class="relative w-full max-w-4xl h-[800px] bg-[url('Paginas/img/Pattern_Humanize-2.png')] bg-center bg-contain bg-no-repeat flex items-center justify-center top-10">
-      <div class="bg-[#FF5459] m-6 rounded-2xl shadow-2xl p-8 w-full max-w-md ">
+      <div class="bg-[#FF5459] m-6 rounded-2xl shadow-2xl p-8 w-full max-w-md">
         <h1 class="font-authorB text-3xl text-center text-[#FEF6EB] mb-6">Agende sua Reunião</h1>
-        
+
         <!-- Mensagem de sucesso -->
         <div id="mensagemSucesso" class="hidden bg-green-500 text-white p-4 rounded-lg mb-4 text-center">
           <p class="font-authorB text-lg">✅ Mensagem enviada com sucesso!</p>
@@ -2034,56 +2112,63 @@ footer > div {
           <p class="font-authorB text-lg">❌ Erro ao enviar agendamento</p>
           <p class="font-authorM mt-2" id="textoErro">Tente novamente mais tarde.</p>
         </div>
-        
+
         <form id="formReuniao" class="space-y-2">
           <!-- Nome -->
           <div>
-            <label for="nome" class="block font-authorM text-[#FEF6EB] mb-1">Nome</label>
+            <label for="nome" class="block font-authorM text-gray-200 mb-1">Nome</label>
             <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF9C19] font-authorM">
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#00000] font-authorM text-black">
           </div>
+
           <!-- E-mail -->
           <div>
-            <label for="email" class="block font-authorM text-[#FEF6EB] mb-1">E-mail</label>
+            <label for="email" class="block font-authorM text-gray-200 mb-1">E-mail</label>
             <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF9C19] font-authorM">
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#00000] font-authorM text-black">
           </div>
+
           <!-- Assunto -->
           <div>
-            <label for="assunto" class="block font-authorM text-[#FEF6EB] mb-1">Assunto</label>
+            <label for="assunto" class="block font-authorM text-gray-200 mb-1">Assunto</label>
             <select id="assunto" name="assunto" required
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF9C19] font-authorM">
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#00000] font-authorM text-black">
               <option value="">Selecione uma opção</option>
               <option value="orcamento">Solicitar Orçamento</option>
               <option value="duvida">Dúvida</option>
               <option value="parceria">Parceria</option>
             </select>
           </div>
-          <!-- Data e Horário -->
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="data" class="block font-authorM text-[#FEF6EB] mb-1">Data</label>
-              <input type="date" id="data" name="data" required
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF9C19] font-authorM">
-            </div>
-            <div>
-              <label for="horario" class="block font-authorM text-[#FEF6EB] mb-1">Horário</label>
-              <input type="time" id="horario" name="horario" required
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF9C19] font-authorM">
-            </div>
-          </div>
+
+<!-- Data e Horário -->
+<div class="grid grid-cols-2 gap-4">
+  <div>
+    <label for="data" class="block font-authorM text-[#FEF6EB] mb-1">Data</label>
+    <input type="date" id="data" name="data" required
+      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#00000] font-authorM text-black">
+  </div>
+  <div>
+    <label for="horario" class="block font-authorM text-[#FEF6EB] mb-1">Horário</label>
+    <input type="time" id="horario" name="horario" required
+      class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF9C19] font-authorM text-black">
+  </div>
+</div>
+
+
+
           <!-- Mensagem -->
           <div>
-            <label for="mensagem" class="block font-authorM text-[#FEF6EB] mb-1">Mensagem</label>
+            <label for="mensagem" class="block font-authorM text-gray-200 mb-1">Mensagem</label>
             <textarea id="mensagem" name="mensagem" rows="4" placeholder="Escreva sua mensagem..."
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF9C19] font-authorM"></textarea>
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FF9C19] font-authorM text-black"></textarea>
           </div>
+
           <!-- Botão e logo -->
           <div class="flex flex-col sm:flex-row items-center gap-4 mt-2">
             <div class="w-full sm:w-2/5 flex justify-center sm:justify-start">
-              <img src="Paginas/img/Reduzido vertical_Humanize-8.png" class="w-32 h-28 sm:w-40 sm:h-35 p-2 object-contain"
-                alt="Logo Humanize">
+              <img src="Paginas/img/Reduzido vertical_Humanize-8.png" class="w-32 h-28 sm:w-40 sm:h-35 p-2 object-contain" alt="Logo Humanize">
             </div>
+
             <button type="submit" id="btnEnviar"
               class="w-full sm:w-3/5 py-4 sm:py-3 rounded-lg bg-[#FF9C19] text-[#FEF6EB] font-authorB text-base sm:text-lg shadow-md hover:bg-[#E68300] transition duration-300 h-14 sm:h-18 flex items-center justify-center">
               <span id="btnText">Enviar Mensagem</span>
@@ -2100,6 +2185,7 @@ footer > div {
     </div>
   </div>
 </section>
+
 
   <section id="galeria" class="py-16 relative overflow-hidden">
     <div class="container mx-auto px-4">
@@ -2737,7 +2823,8 @@ footer > div {
           </div>
           
           <div class="testimonial-card">
-            <h3 class="text-lg font-semibold mb-3">Depoimento da Cliente</h3>
+            <h3 class="text-lg font-semibold mb-3 text-black">Depoimento da Cliente</h3>
+
             <p class="text-gray-700 italic">"A Humanize transformou minha comunicação com os pacientes. Agora eles chegam ao consultório mais confiantes e informados. Minha agenda nunca esteve tão cheia e o melhor: com pacientes que realmente se identificam com meu trabalho."</p>
           </div>
           
@@ -3520,6 +3607,90 @@ _Agendamento realizado via site - AGUARDE A CONFIRMAÇÃO_
 }
 
 
+
+
+
+   const frases = [
+      "Agência Humanize",
+      "Humanização Digital",
+      "Marketing com Propósito",
+      "Conteúdo que Conecta",
+    ];
+
+    const textElement = document.getElementById("text");
+    let index = 0;
+
+    /* Função para troca de texto com fade suave */
+    function trocarTexto() {
+      // Fade out
+      textElement.style.opacity = 0;
+      textElement.style.transform = "translateZ(60px) translateY(10px)";
+      
+      setTimeout(() => {
+        index = (index + 1) % frases.length;
+        textElement.textContent = frases[index];
+        
+        // Fade in
+        textElement.style.opacity = 1;
+        textElement.style.transform = "translateZ(60px) translateY(0)";
+      }, 700);
+    }
+
+    setInterval(trocarTexto, 4000);
+
+    const card = document.getElementById("card");
+    const iconLeft = document.getElementById("iconLeft");
+    const iconRight = document.getElementById("iconRight");
+
+    card.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+
+      const rotateX = (y / 40) * -1;
+      const rotateY = x / 40;
+
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+      iconLeft.style.transform = `translateZ(50px) translateX(${x / 80}px) translateY(${y / 80}px)`;
+      iconRight.style.transform = `translateZ(50px) translateX(${x / 80}px) translateY(${y / 80}px)`;
+
+      textElement.style.transform = `translateZ(60px) translateX(${x / 100}px) translateY(${y / 100}px)`;
+    });
+
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "rotateX(0) rotateY(0)";
+      textElement.style.transform = "translateZ(60px) translateY(0)";
+      iconLeft.style.transform = "translateZ(50px)";
+      iconRight.style.transform = "translateZ(50px)";
+    });
+    // Ativar blur na próxima seção quando o usuário rolar
+    window.addEventListener('scroll', function() {
+      const hero = document.getElementById('hero');
+      const nextSection = document.getElementById('nextSection');
+      const heroBottom = hero.getBoundingClientRect().bottom;
+      
+      if (heroBottom <= window.innerHeight * 0.7) {
+        nextSection.classList.add('active');
+      } else {
+        nextSection.classList.remove('active');
+      }
+    });
+
+    // Garantir que as imagens carreguem
+    document.addEventListener('DOMContentLoaded', function() {
+      const iconLeft = document.getElementById('iconLeft');
+      const iconRight = document.getElementById('iconRight');
+      
+      // Fallback para caso as imagens não carreguem
+      iconLeft.onerror = function() {
+        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMjUiIGZpbGw9IiNGRjVBNTkiLz4KPHBhdGggZD0iTTIwIDMwSDE1VjM1SDIwVjMwWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQ1IDMwSDQwVjM1SDQ1VjMwWiIgZmlsbD0id2hpdGUiLz4KPGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMyIgZmlsbD0id2hpdGUiLz4KPGNpcmNsZSBjeD0iMzUiIGN5PSIyNSIgcj0iMyIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTI1IDM1QzI1IDM1IDI3IDM4IDMwIDM4QzMzIDM4IDM1IDM1IDM1IDM1IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+';
+      };
+      
+      iconRight.onerror = function() {
+        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMjUiIGZpbGw9IiNGRjlDMDEiLz4KPHBhdGggZD0iTTMwIDEwTDM1IDIwTDI1IDIwTDMwIDEwWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQwIDI1TDMwIDM1TDIwIDI1TDQwIDI1WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTMwIDQwTDM1IDMwTDI1IDMwTDMwIDQwWiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+';
+      };
+    });
 
   </script>
 </body>
