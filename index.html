@@ -16,29 +16,30 @@
   
 
 
-  <style>      /* HERO SECTION CORRIGIDA */
-    .hero {
-       font-family: 'Poppins';
-      margin: 0;
-      height: 100vh;
-      font-weight: 300;
-      
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: #fff5ec;
-      background:
-        radial-gradient(
-          circle at center bottom,
-          rgba(255, 120, 70, 0.75),
-          rgba(255, 100, 50, 0.55) 40%,
-          transparent 60%
-        );
-      position: relative;
-      opacity: 0;
-      animation: pageFadeIn 1s ease forwards;
-    }
+  <style>      .hero {
+  font-family: 'Poppins';
+  margin: 0;
+  min-height: 100vh;
+  height: auto;
+  font-weight: 300;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #fff5ec;
+  background:
+    radial-gradient(
+      circle at center bottom,
+      rgba(255, 120, 70, 0.75),
+      rgba(255, 100, 50, 0.55) 40%,
+      transparent 60%
+    );
+  position: relative;
+  opacity: 0;
+  animation: pageFadeIn 1s ease forwards;
+  padding: 40px 0;
+}
 
     @keyframes pageFadeIn {
       to { opacity: 1; }
@@ -82,15 +83,41 @@
       left: 10%;
       top: 35%;
       transform: translateY(-50%);
-      animation: floatLeft 4s ease-in-out infinite;
+      animation: floatLeft 3s ease-in-out infinite;
     }
 
     .icon.right {
       right: 5%;
       top: 45%;
       transform: translateY(-50%);
-      animation: floatRight 4.5s ease-in-out infinite;
+      animation: floatRight 3.2s ease-in-out infinite;
     }
+
+    /* AJUSTES ESPECÍFICOS PARA MOBILE - ALTURA */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 80vh;
+    padding: 60px 20px 40px;
+    justify-content: flex-start; /* Começa mais no topo */
+  }
+  
+  .title {
+    font-size: 42px;
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    min-height: 70vh;
+    padding: 40px 20px 30px;
+  }
+  
+  .title {
+    font-size: 36px;
+    margin-top: 30px;
+  }
+}
 
     @keyframes floatLeft {
       0%, 100% {
