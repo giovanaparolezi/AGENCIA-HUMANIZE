@@ -2008,103 +2008,15 @@ footer > div {
           </div>
         </div>
       </div>
-<section id="orçamento" class="relative leading-relaxed z-0">
-  <div class="flex justify-center items-center mt-12 px-4 z-0">
-    <div
-      class="z-0 relative w-full max-w-5xl rounded-2xl overflow-hidden bg-gradient-to-r from-[#FF5A5F] to-[#FFA500] p-8 shadow-xl">
-      <!-- Imagem de fundo com baixa opacidade -->
-      <div class="absolute inset-0 opacity-5 z-10 pointer-events-none">
-        <img src="Paginas/img/Pattern_Humanize-2.png" alt="Background" class="w-full h-full object-cover" />
-      </div>
-      <!-- Mulher posicionada MENOS à direita -->
-      <img src="Paginas/img/Ilust1_Humanize-1.png" alt="Ilustração mulher"
-        class="absolute bottom-1 right-[300px] max-h-[420px] opacity-90 z-10 hidden lg:block"> <!-- Alterado para right-[300px] -->
-      <!-- Conteúdo principal -->
-      <div class="relative z-20 grid md:grid-cols-2 gap-8 items-start">
-        <!-- Texto lado esquerdo - MAIS PARA BAIXO -->
-        <div class="text-[#FEF6EB] max-w-sm fade-in mt-12"> <!-- Aumentado mt-4 para mt-12 -->
-          <h2 class="text-4xl font-authorB mb-3">Solicite seu orçamento</h2>
-          <p class="text-base font-authorM">
-            Conte sobre sua necessidade e nossa equipe entrará em contato com uma proposta personalizada.
-          </p>
-        </div>
-        <!-- Box do formulário -->
-        <div class="bg-[#FEF6EB] text-gray-700 rounded-xl p-6 shadow-lg font-authorM fade-in">
-          
-          <!-- Mensagem de sucesso -->
-          <div id="mensagemSucessoOrcamento" class="hidden bg-green-500 text-white p-4 rounded-lg mb-4 text-center">
-            <p class="font-authorB text-lg">✅ Solicitação enviada com sucesso!</p>
-            <p class="font-authorM mt-2">Em breve nossa agência entrará em contato com você.</p>
-          </div>
-
-          <!-- Mensagem de erro -->
-          <div id="mensagemErroOrcamento" class="hidden bg-red-500 text-white p-4 rounded-lg mb-4 text-center">
-            <p class="font-authorB text-lg">❌ Erro ao enviar solicitação</p>
-            <p class="font-authorM mt-2" id="textoErroOrcamento">Tente novamente mais tarde.</p>
-          </div>
-          
-          <form id="formOrcamento" class="space-y-4">
-            <!-- Inputs -->
-            <div>
-              <label class="block text-sm font-authorM">Nome:</label>
-              <input type="text" id="nomeOrcamento" name="nome" required
-                class="w-full border-b border-gray-300 focus:border-[#FF5A5F] outline-none bg-transparent">
-            </div>
-            <div>
-              <label class="block text-sm font-authorM">Email:</label>
-              <input type="email" id="emailOrcamento" name="email" required
-                class="w-full border-b border-gray-300 focus:border-[#FF5A5F] outline-none bg-transparent">
-            </div>
-            <div>
-              <label class="block text-sm font-authorM">Celular:</label>
-              <input type="text" id="celularOrcamento" name="celular" required
-                class="w-full border-b border-gray-300 focus:border-[#FF5A5F] outline-none bg-transparent">
-            </div>
-            <div>
-              <label class="block text-sm font-authorM">Empresa:</label>
-              <input type="text" id="empresaOrcamento" name="empresa"
-                class="w-full border-b border-gray-300 focus:border-[#FF5A5F] outline-none bg-transparent">
-            </div>
-            <!-- Checkboxes - ajuda -->
-            <div>
-              <p class="font-authorM">Como podemos te ajudar?</p>
-              <div class="grid grid-cols-2 gap-2 text-sm">
-                <label><input type="checkbox" class="mr-2" value="Criação de identidade visual" name="ajuda"> Criação de identidade visual</label>
-                <label><input type="checkbox" class="mr-2" value="Criação de conteúdo" name="ajuda"> Criação de conteúdo</label>
-                <label><input type="checkbox" class="mr-2" value="Gestão de redes sociais" name="ajuda"> Gestão de redes sociais</label>
-                <label><input type="checkbox" class="mr-2" value="Cobertura em eventos" name="ajuda"> Cobertura em eventos</label>
-              </div>
-            </div>
-            <!-- Checkboxes - nicho -->
-            <div>
-              <p class="font-authorM">Qual seu nicho de negócio?</p>
-              <div class="grid grid-cols-2 gap-2 text-sm">
-                <label><input type="checkbox" class="mr-2" value="Gastronomia" name="nicho"> Gastronomia</label>
-                <label><input type="checkbox" class="mr-2" value="Comércio Varejista" name="nicho"> Comércio Varejista</label>
-                <label><input type="checkbox" class="mr-2" value="Moda e beleza" name="nicho"> Moda e beleza</label>
-                <label><input type="checkbox" class="mr-2" value="Saúde" name="nicho"> Saúde</label>
-                <label><input type="checkbox" class="mr-2" value="Eventos" name="nicho"> Eventos</label>
-                <label><input type="checkbox" class="mr-2" value="Outros" name="nicho"> Outros</label>
-              </div>
-            </div>
-            <!-- Botão -->
-            <button type="submit" id="btnEnviarOrcamento"
-              class="w-full bg-[#FF5A5F] hover:bg-[#E0494E] text-white font-authorB py-3 rounded-md transition flex items-center justify-center">
-              <span id="btnTextOrcamento">Solicitar Orçamento</span>
-              <div id="btnLoadingOrcamento" class="hidden ml-2">
-                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-              </div>
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
+<div class="absolute bottom-0 left-0 w-full h-auto min-h-[80px] md:h-[100px] bg-[#f67240] z-10 flex items-center py-2">
+  <div class="w-full text-center font-authorB text-white text-sm md:text-lg lg:text-2xl px-4">
+    <span class="fade-in">
+      <span class="font-bold">+DE 50 CLIENTES ATENDIDOS EM</span><br class="md:hidden">
+      MONTE ALTO, TAQUARITINGA, JABOTICABAL, PIRANGI,<br class="hidden md:block">
+      CRAVINHOS, BARRINHA E RIBEIRÃO PRETO
+    </span>
   </div>
-</section>
- 
+</div>
 
       <!-- MODAL COM LAYOUT VERTICAL -->
       <div id="modal" class="hidden">
@@ -2180,29 +2092,30 @@ footer > div {
 
 
 <!-- Seção Orçamento -->
+<!-- Seção Orçamento -->
 <section id="orçamento" class="relative leading-relaxed z-0">
   <div class="flex justify-center items-center mt-20 px-4 z-0">
     <div
-      class="z-0 relative w-full max-w-5xl rounded-2xl overflow-hidden bg-gradient-to-r from-[#FF5A5F] to-[#FFA500] p-10 shadow-xl">
+      class="z-0 relative w-full max-w-5xl rounded-2xl overflow-hidden bg-gradient-to-r from-[#FF5A5F] to-[#FFA500] p-6 md:p-10 shadow-xl">
       <!-- Imagem de fundo com baixa opacidade -->
       <div class="absolute inset-0 opacity-5 z-10 pointer-events-none">
         <img src="Paginas/img/Pattern_Humanize-2.png" alt="Background" class="w-full h-full object-cover" />
       </div>
       <!-- Mulher posicionada no fundo à esquerda -->
       <img src="Paginas/img/Ilust1_Humanize-1.png" alt="Ilustração mulher"
-        class="absolute bottom-1 left-[310px] max-h-[540px] opacity-90 z-10 hidden lg:block">
+        class="absolute bottom-1 left-[227px] max-h-[540px] opacity-90 z-10 hidden lg:block">
       <!-- Conteúdo principal -->
-      <div class="relative z-20 grid md:grid-cols-2 gap-10 items-center">
+      <div class="relative z-20 grid md:grid-cols-2 gap-8 md:gap-10 items-center">
         <!-- Texto lado esquerdo -->
         <div class="text-[#FEF6EB] max-w-sm fade-in">
-          <h2 class="text-5xl font-authorB mb-6">Solicite seu orçamento <br> personalizado</h2>
-          <p class="text-lg  font-authorM">
-            Conte um pouco sobre sua necessidade e nossa equipe <br> entrará em contato com uma proposta feita sob
+          <h2 class="text-3xl md:text-4xl font-authorB mb-6">Solicite seu <br> orçamento <br> personalizado</h2>
+          <p class="text-base md:text-lg font-authorM">
+            Conte um pouco sobre sua necessidade  <br class="hidden md:block"> e nossa equipe entrará em contato com <br> uma proposta feita sob
             medida.
           </p>
         </div>
-        <!-- Box do formulário -->
-        <div class="bg-[#FEF6EB] text-gray-700 rounded-xl p-8 m-4 md:ml-[80px] shadow-lg font-authorM fade-in">
+        <!-- Box do formulário - ALINHADO À ESQUERDA NO RESPONSIVO -->
+        <div class="bg-[#FEF6EB] text-gray-700 rounded-xl p-6 md:p-8 shadow-lg font-authorM fade-in">
           
           <!-- Mensagem de sucesso -->
           <div id="mensagemSucessoOrcamento" class="hidden bg-green-500 text-white p-4 rounded-lg mb-4 text-center">
@@ -2241,23 +2154,23 @@ footer > div {
             <!-- Checkboxes - ajuda -->
             <div>
               <p class="font-authorM">Como podemos te ajudar?</p>
-              <div class="grid grid-cols-2 gap-2 text-sm">
-                <label><input type="checkbox" class="mr-2" value="Criação de identidade visual" name="ajuda"> Criação de identidade visual</label>
-                <label><input type="checkbox" class="mr-2" value="Criação de conteúdo" name="ajuda"> Criação de conteúdo</label>
-                <label><input type="checkbox" class="mr-2" value="Gestão de redes sociais" name="ajuda"> Gestão de redes sociais</label>
-                <label><input type="checkbox" class="mr-2" value="Cobertura em eventos" name="ajuda"> Cobertura em eventos</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                <label class="flex items-center"><input type="checkbox" class="mr-2" value="Criação de identidade visual" name="ajuda"> Criação de identidade visual</label>
+                <label class="flex items-center"><input type="checkbox" class="mr-2" value="Criação de conteúdo" name="ajuda"> Criação de conteúdo</label>
+                <label class="flex items-center"><input type="checkbox" class="mr-2" value="Gestão de redes sociais" name="ajuda"> Gestão de redes sociais</label>
+                <label class="flex items-center"><input type="checkbox" class="mr-2" value="Cobertura em eventos" name="ajuda"> Cobertura em eventos</label>
               </div>
             </div>
             <!-- Checkboxes - nicho -->
             <div>
               <p class="font-authorM">Qual seu nicho de negócio?</p>
-              <div class="grid grid-cols-2 gap-2 text-sm">
-                <label><input type="checkbox" class="mr-2" value="Gastronomia" name="nicho"> Gastronomia</label>
-                <label><input type="checkbox" class="mr-2" value="Comércio Varejista" name="nicho"> Comércio Varejista</label>
-                <label><input type="checkbox" class="mr-2" value="Moda e beleza" name="nicho"> Moda e beleza</label>
-                <label><input type="checkbox" class="mr-2" value="Saúde" name="nicho"> Saúde</label>
-                <label><input type="checkbox" class="mr-2" value="Eventos" name="nicho"> Eventos</label>
-                <label><input type="checkbox" class="mr-2" value="Outros" name="nicho"> Outros</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                <label class="flex items-center"><input type="checkbox" class="mr-2" value="Gastronomia" name="nicho"> Gastronomia</label>
+                <label class="flex items-center"><input type="checkbox" class="mr-2" value="Comércio Varejista" name="nicho"> Comércio Varejista</label>
+                <label class="flex items-center"><input type="checkbox" class="mr-2" value="Moda e beleza" name="nicho"> Moda e beleza</label>
+                <label class="flex items-center"><input type="checkbox" class="mr-2" value="Saúde" name="nicho"> Saúde</label>
+                <label class="flex items-center"><input type="checkbox" class="mr-2" value="Eventos" name="nicho"> Eventos</label>
+                <label class="flex items-center"><input type="checkbox" class="mr-2" value="Outros" name="nicho"> Outros</label>
               </div>
             </div>
             <!-- Botão -->
