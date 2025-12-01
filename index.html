@@ -16,7 +16,59 @@
   
 
 
-  <style>      .hero {
+  <style>   .scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.arrow-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.arrow-text {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  text-transform: lowercase;
+}
+
+.arrow-down {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #fff;
+  border-left: 0;
+  border-top: 0;
+  transform: rotate(45deg);
+  animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: rotate(45deg) translateY(0);
+  }
+  50% {
+    transform: rotate(45deg) translateY(8px);
+  }
+}
+
+/* Para mobile */
+@media (max-width: 768px) {
+  .scroll-indicator {
+    bottom: 20px;
+  }
+  
+  .arrow-text {
+    font-size: 12px;
+  }
+}   .hero {
   font-family: 'Poppins';
   margin: 0;
   min-height: 100vh;
@@ -259,19 +311,6 @@
 
 
 
-
-@font-face {
-  font-family: 'Author M';
-  src: url('Author-Medium.otf') format('opentype');
-  font-display: swap;
-}
-
-
-@font-face {
-  font-family: 'Author B';
-  src: url('Author-Bold.otf') format('opentype');
-  font-display: swap;
-}
 .font-authorM {
   font-family: 'Author M';
 }
@@ -1660,7 +1699,8 @@ footer > div {
 
 </section>
 
-    <main class="md:ml-72"><div class="hero" id="hero">
+<main class="md:ml-72">
+  <div class="hero" id="hero">
     <div class="line"></div>
 
     <!-- Imagens que serão escondidas no mobile -->
@@ -1679,7 +1719,14 @@ footer > div {
 
     <div class="title" id="text">
       <span>Agência Humanize</span>
-      
+    </div>
+    
+    <!-- Seta animada suave -->
+    <div class="scroll-indicator">
+      <div class="arrow-container">
+        <span class="arrow-text">acessar site</span>
+        <div class="arrow-down"></div>
+      </div>
     </div>
   </div>
 
