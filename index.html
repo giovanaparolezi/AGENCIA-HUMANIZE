@@ -310,14 +310,29 @@
 
 
 
+/* Converta seus .otf para .woff2 (use: transfonter.org) */
+@font-face {
+  font-family: 'AuthorMedium';
+  src: url('Author-Medium.woff2') format('woff2'),
+       url('Author-Medium.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AuthorBold';
+  src: url('Author-Bold.woff2') format('woff2'),
+       url('Author-Bold.woff') format('woff');
+  font-display: swap;
+}
 
 .font-authorM {
-  font-family: 'Author M';
+  font-family: 'AuthorMedium', sans-serif;
 }
 
 .font-authorB {
-  font-family: 'Author B';
+  font-family: 'AuthorBold', sans-serif;
 }
+
 #serviços{
   font-family: 'Author M';
 }
@@ -2154,13 +2169,21 @@ footer > div {
       <!-- Conteúdo principal -->
       <div class="relative z-20 grid md:grid-cols-2 gap-8 md:gap-10 items-center">
         <!-- Texto lado esquerdo -->
-        <div class="text-[#FEF6EB] max-w-sm fade-in">
-          <h2 class="text-3xl md:text-4xl font-authorB mb-6">Solicite seu <br> orçamento <br> personalizado</h2>
-          <p class="text-base md:text-lg font-authorM">
-            Conte um pouco sobre sua necessidade  <br class="hidden md:block"> e nossa equipe entrará em contato com <br> uma proposta feita sob
-            medida.
-          </p>
-        </div>
+<div class="text-[#FEF6EB] max-w-sm fade-in text-center mx-auto md:text-left md:mx-0">
+  <h2 class="text-3xl md:text-4xl font-authorB mb-6">
+    <span class="md:hidden">
+      <span class="block">Solicite seu orçamento</span>
+      <span class="block">personalizado</span>
+    </span>
+    <span class="hidden md:block">
+      Solicite seu <br> orçamento <br> personalizado
+    </span>
+  </h2>
+  <p class="text-base md:text-lg font-authorM">
+    Conte um pouco sobre sua necessidade  <br class="hidden md:block"> e nossa equipe entrará em contato com <br> uma proposta feita sob
+    medida.
+  </p>
+</div>
         <!-- Box do formulário - ALINHADO À ESQUERDA NO RESPONSIVO -->
         <div class="bg-[#FEF6EB] text-gray-700 rounded-xl p-6 md:p-8 shadow-lg font-authorM fade-in">
           
